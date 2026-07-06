@@ -1,0 +1,13 @@
+promotion_id,promotion_name,discount_type,discount_value,promotion_status
+1,Welcome Offer,Flat,100.0,Active
+2,Weekend Feast,Percentage,20.0,Active
+3,Monsoon Saver,Percentage,15.0,Active
+4,Free Delivery,Flat,40.0,Active
+5,Lunch Combo,Percentage,10.0,Active
+6,Midnight Munchies,Flat,75.0,Active
+7,Festival Special,Percentage,25.0,Active
+8,Family Pack,Percentage,18.0,Active
+9,Student Saver,Flat,60.0,Active
+10,Wallet Cashback,Percentage,12.0,Active
+11,Summer Splash,Percentage,15.0,Expired
+12,Winter Warmers,Flat,80.0,Expired

@@ -1,0 +1,6 @@
+payment_id,payment_method,payment_status
+1,UPI,Successful
+2,Credit Card,Successful
+3,Debit Card,Successful
+4,Cash,Successful
+5,Wallet,Successful
