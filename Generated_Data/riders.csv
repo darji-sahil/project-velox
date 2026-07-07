@@ -1,0 +1,301 @@
+rider_id,zone_id,rider_name,gender,age,vehicle_type,experience_level,rider_rating,employment_type,shift,joining_date,is_active
+1,25,Venkatesh Ramesh,Male,33,Bicycle,Intermediate,4.5,Full Time,Night,2025-03-14,True
+2,34,Manoj Kulkarni,Male,31,Scooter,Intermediate,4.1,Full Time,Afternoon,2025-03-18,True
+3,18,Basavaraj Pai,Male,35,Scooter,Intermediate,4.4,Part Time,Night,2024-12-17,True
+4,2,Uma Patel,Female,23,Bicycle,Beginner,3.8,Full Time,Night,2024-01-03,True
+5,29,Palak Parikh,Female,32,Scooter,Intermediate,4.3,Part Time,Night,2024-11-27,True
+6,28,Milan Mehta,Male,23,Electric Bike,Beginner,3.6,Part Time,Afternoon,2024-03-04,True
+7,24,Mallesh Patel,Male,32,Scooter,Intermediate,4.1,Full Time,Afternoon,2025-05-30,True
+8,13,Swati Sathe,Female,29,Bike,Experienced,4.9,Part Time,Morning,2024-04-25,True
+9,1,Akash Kulkarni,Male,27,Electric Bike,Intermediate,4.5,Full Time,Afternoon,2024-04-20,True
+10,21,Harsh Goud,Male,26,Scooter,Intermediate,4.3,Full Time,Afternoon,2024-03-16,True
+11,29,Paresh Gupta,Male,18,Bike,Beginner,4.1,Full Time,Afternoon,2024-11-02,True
+12,7,Umesh Salunkhe,Male,23,Bicycle,Intermediate,4.3,Part Time,Afternoon,2024-04-19,True
+13,27,Hasmukh Mehta,Male,18,Scooter,Beginner,3.8,Full Time,Afternoon,2025-04-04,True
+14,6,Mangesh Waghmare,Male,33,Bike,Intermediate,4.6,Full Time,Morning,2024-12-20,True
+15,22,Harsh Sai,Male,18,Bike,Beginner,3.8,Part Time,Afternoon,2024-04-03,True
+16,27,Aditya Shah,Male,18,Scooter,Beginner,3.7,Full Time,Morning,2024-08-08,True
+17,38,Rajender Arora,Male,19,Bike,Beginner,3.5,Part Time,Afternoon,2024-12-27,True
+18,26,Aarav Yadav,Male,28,Bike,Experienced,4.9,Part Time,Afternoon,2024-07-12,True
+19,17,Mohan Bhat,Male,32,Scooter,Intermediate,4.3,Full Time,Night,2025-03-06,True
+20,20,Darshan Kulkarni,Male,35,Bike,Intermediate,4.6,Full Time,Morning,2024-11-25,True
+21,9,Vinay Reddy,Male,30,Bike,Intermediate,4.4,Part Time,Afternoon,2025-08-30,True
+22,13,Yash Karandikar,Male,39,Scooter,Experienced,4.7,Full Time,Afternoon,2025-11-13,True
+23,31,Paresh Patel,Male,31,Bike,Intermediate,4.2,Full Time,Morning,2025-11-23,False
+24,31,Aarav Kulkarni,Male,28,Bike,Intermediate,4.4,Part Time,Night,2025-09-26,True
+25,12,Shailesh Agashe,Male,25,Scooter,Intermediate,4.5,Full Time,Afternoon,2025-12-19,True
+26,5,Akash Gupta,Male,22,Bicycle,Beginner,3.9,Full Time,Night,2025-09-01,True
+27,36,Akash Khanna,Male,19,Scooter,Beginner,3.5,Full Time,Night,2025-07-17,True
+28,39,Mukesh Arora,Male,38,Electric Bike,Experienced,4.5,Full Time,Night,2025-06-05,True
+29,19,Shankar Kulkarni,Male,34,Scooter,Intermediate,4.5,Full Time,Night,2024-11-18,True
+30,30,Mahendra Pandya,Male,31,Scooter,Intermediate,4.5,Full Time,Night,2025-07-15,True
+31,3,Yash Kamble,Male,45,Electric Bike,Experienced,4.4,Full Time,Night,2025-12-05,True
+32,20,Aditya Patil,Male,25,Bike,Intermediate,4.2,Full Time,Morning,2025-02-07,True
+33,4,Sunil Salunkhe,Male,18,Electric Bike,Beginner,3.7,Part Time,Night,2024-12-30,False
+34,3,Rohan Patil,Male,37,Bike,Experienced,4.4,Part Time,Afternoon,2024-05-03,True
+35,27,Pooja Modi,Female,30,Bike,Intermediate,4.3,Part Time,Afternoon,2025-11-16,True
+36,14,Darshan Bhat,Male,26,Bike,Intermediate,4.1,Full Time,Night,2025-06-06,True
+37,1,Ravindra Jagtap,Male,38,Bike,Experienced,4.4,Full Time,Morning,2025-05-21,True
+38,11,Shailesh Patel,Male,33,Scooter,Experienced,4.5,Part Time,Morning,2024-05-07,True
+39,6,Nikhil Joshi,Male,29,Scooter,Experienced,4.8,Full Time,Morning,2024-09-13,False
+40,9,Vikas Oak,Male,22,Bike,Beginner,3.9,Full Time,Morning,2025-11-24,False
+41,11,Aditya Ranade,Male,29,Scooter,Intermediate,4.1,Full Time,Afternoon,2025-02-18,True
+42,9,Vinay Limaye,Male,36,Bike,Experienced,4.9,Full Time,Morning,2024-05-10,True
+43,37,Manoj Tandon,Male,26,Bicycle,Intermediate,4.2,Full Time,Afternoon,2024-05-04,False
+44,8,Prakash Gaikwad,Male,18,Bike,Beginner,4.0,Full Time,Afternoon,2024-01-27,True
+45,9,Shailesh Joshi,Male,21,Electric Bike,Beginner,4.2,Full Time,Night,2025-02-15,False
+46,8,Vilas Waghmare,Male,47,Electric Bike,Experienced,4.6,Full Time,Night,2025-01-17,True
+47,29,Jignesh Desai,Male,27,Scooter,Intermediate,4.4,Part Time,Afternoon,2024-12-01,True
+48,28,Harsh Brahmbhatt,Male,44,Electric Bike,Experienced,4.8,Full Time,Night,2025-12-22,True
+49,13,Rohan Nene,Male,26,Bike,Intermediate,4.5,Full Time,Morning,2025-12-30,True
+50,29,Akash Modi,Male,22,Bike,Intermediate,4.4,Full Time,Afternoon,2024-02-23,True
+51,22,Madhavi Sai,Other,23,Electric Bike,Intermediate,4.0,Full Time,Night,2024-10-13,True
+52,17,Nagaraj Sharma,Male,33,Bike,Intermediate,4.0,Part Time,Morning,2025-11-25,True
+53,30,Vipul Trivedi,Male,27,Bike,Intermediate,4.3,Full Time,Afternoon,2024-02-26,True
+54,9,Kishor Lele,Male,33,Bike,Intermediate,4.5,Full Time,Afternoon,2024-04-22,True
+55,39,Ashwani Chopra,Male,22,Bike,Beginner,3.9,Full Time,Morning,2025-04-18,True
+56,36,Rakesh Malhotra,Male,23,Bike,Intermediate,4.5,Full Time,Afternoon,2025-03-08,True
+57,12,Nitin Gokhale,Male,34,Bicycle,Intermediate,4.5,Part Time,Afternoon,2025-06-25,True
+58,11,Shrikant Phadke,Male,26,Bike,Intermediate,4.3,Full Time,Night,2025-09-24,True
+59,23,Rohan Goud,Other,22,Bicycle,Intermediate,4.5,Full Time,Night,2025-05-22,False
+60,3,Harsh Chaudhari,Male,39,Electric Bike,Experienced,4.9,Full Time,Afternoon,2024-03-20,True
+61,29,Mahendra Shah,Male,25,Scooter,Intermediate,4.3,Full Time,Night,2024-03-27,True
+62,7,Ashok Mane,Male,32,Bicycle,Experienced,4.9,Part Time,Night,2025-05-31,True
+63,1,Harsh Jagtap,Male,24,Bike,Beginner,3.8,Part Time,Night,2025-05-01,True
+64,22,Ravi Joshi,Male,31,Bike,Experienced,4.5,Part Time,Afternoon,2024-06-21,True
+65,21,Srinath Yadav,Male,35,Bike,Intermediate,4.5,Full Time,Night,2024-08-05,True
+66,4,Umesh Jagtap,Male,35,Scooter,Intermediate,4.5,Part Time,Morning,2024-04-21,True
+67,3,Mahesh Kamble,Male,20,Bike,Beginner,3.6,Full Time,Morning,2025-01-09,True
+68,32,Deepak Khanna,Male,47,Bicycle,Experienced,4.9,Full Time,Morning,2024-12-15,True
+69,7,Nikhil Waghmare,Male,29,Scooter,Intermediate,4.3,Full Time,Afternoon,2024-06-21,True
+70,22,Naresh Goud,Male,41,Electric Bike,Experienced,4.7,Full Time,Night,2025-12-10,True
+71,13,Bharat Joshi,Male,23,Bike,Intermediate,4.4,Full Time,Morning,2024-07-08,True
+72,15,Pavithra Shenoy,Female,32,Electric Bike,Intermediate,4.0,Full Time,Afternoon,2024-09-29,True
+73,29,Sanjay Parikh,Male,22,Bike,Beginner,4.1,Full Time,Morning,2025-10-01,False
+74,23,Niharika Reddy,Female,35,Bike,Experienced,4.8,Part Time,Morning,2024-04-04,False
+75,15,Akash Sharma,Male,27,Scooter,Intermediate,4.5,Full Time,Morning,2025-05-30,True
+76,37,Harsh Joshi,Male,22,Scooter,Intermediate,4.4,Part Time,Morning,2024-09-15,True
+77,10,Vinay Patel,Male,33,Scooter,Intermediate,4.3,Full Time,Morning,2024-02-25,True
+78,10,Vikas Deshpande,Other,28,Bicycle,Intermediate,4.3,Full Time,Morning,2025-11-29,True
+79,8,Mahesh Dongre,Male,34,Scooter,Intermediate,4.3,Full Time,Morning,2025-06-27,True
+80,38,Deepak Joshi,Male,28,Scooter,Experienced,4.7,Part Time,Afternoon,2025-01-07,True
+81,20,Manjunath Joshi,Male,35,Scooter,Intermediate,4.4,Full Time,Afternoon,2025-07-26,True
+82,18,Jagadish Gupta,Male,29,Bike,Intermediate,4.4,Full Time,Afternoon,2025-03-18,True
+83,3,Ananya Mane,Female,21,Electric Bike,Beginner,4.0,Full Time,Morning,2025-11-12,True
+84,14,Basavaraj Murthy,Male,18,Bike,Beginner,3.6,Part Time,Afternoon,2025-12-31,True
+85,9,Swapnil Oak,Male,22,Bike,Intermediate,4.4,Full Time,Afternoon,2025-12-05,True
+86,13,Nitin Phadke,Male,30,Bike,Intermediate,4.3,Full Time,Morning,2024-06-13,True
+87,14,Shivanna Reddy,Male,22,Bicycle,Beginner,3.5,Full Time,Night,2025-02-09,True
+88,9,Aarav Nene,Male,24,Bike,Intermediate,4.0,Full Time,Morning,2025-12-02,True
+89,2,Suresh Salunkhe,Male,24,Bike,Intermediate,4.1,Full Time,Afternoon,2025-04-30,False
+90,2,Santosh Lokhande,Male,25,Bike,Intermediate,4.1,Full Time,Afternoon,2025-08-21,True
+91,23,Chandra Kumar,Male,35,Bike,Intermediate,4.1,Part Time,Night,2025-09-26,True
+92,12,Aarav Phadke,Male,22,Bike,Intermediate,4.4,Part Time,Night,2024-01-29,True
+93,8,Umesh Patel,Male,30,Bike,Experienced,4.9,Full Time,Night,2025-03-07,True
+94,28,Ketan Vyas,Male,29,Bike,Intermediate,4.3,Full Time,Night,2025-02-02,True
+95,5,Ramesh Mohite,Male,24,Scooter,Intermediate,4.1,Part Time,Afternoon,2024-01-24,True
+96,2,Sunil Kamble,Male,26,Scooter,Intermediate,4.2,Part Time,Night,2024-08-18,True
+97,22,Srinath Raju,Male,29,Bike,Intermediate,4.4,Full Time,Afternoon,2024-07-09,True
+98,17,Manjunath Gowda,Male,31,Bike,Intermediate,4.1,Part Time,Night,2024-11-19,True
+99,35,Mukesh Verma,Male,25,Scooter,Intermediate,4.1,Full Time,Afternoon,2025-11-16,True
+100,8,Mangesh Borse,Male,31,Electric Bike,Intermediate,4.5,Full Time,Afternoon,2024-05-23,True
+101,28,Krupa Vyas,Female,19,Scooter,Beginner,3.8,Part Time,Morning,2024-07-01,True
+102,8,Ganesh Patil,Male,19,Bike,Beginner,3.8,Full Time,Afternoon,2024-12-29,True
+103,4,Suresh Mohite,Male,28,Bike,Intermediate,4.2,Part Time,Night,2025-04-20,True
+104,22,Rohan Reddy,Male,18,Bike,Beginner,3.9,Full Time,Afternoon,2025-01-31,True
+105,33,Pankaj Kapoor,Male,23,Scooter,Intermediate,4.3,Full Time,Morning,2025-06-22,True
+106,28,Harsh Desai,Male,30,Bike,Intermediate,4.2,Full Time,Afternoon,2025-11-29,True
+107,16,Aditya Murthy,Male,30,Scooter,Intermediate,4.4,Full Time,Night,2025-01-15,True
+108,3,Rohan Joshi,Male,22,Bike,Beginner,3.6,Full Time,Afternoon,2024-12-16,True
+109,22,Yash Kumar,Male,31,Electric Bike,Experienced,4.5,Full Time,Afternoon,2024-12-21,True
+110,11,Ajinkya Karandikar,Male,27,Scooter,Intermediate,4.6,Full Time,Afternoon,2025-10-07,True
+111,15,Akash Bhat,Male,44,Bike,Experienced,5.0,Part Time,Night,2025-06-06,True
+112,33,Vikas Singh,Male,24,Scooter,Beginner,4.0,Part Time,Afternoon,2025-06-20,True
+113,10,Nitin Agashe,Male,25,Electric Bike,Intermediate,4.0,Part Time,Morning,2025-01-29,True
+114,31,Jinal Patel,Female,46,Scooter,Experienced,4.9,Full Time,Morning,2024-11-24,True
+115,30,Vipul Parikh,Male,26,Bike,Intermediate,4.3,Full Time,Morning,2025-07-10,True
+116,14,Manjunath Patil,Male,30,Electric Bike,Intermediate,4.3,Part Time,Afternoon,2025-12-02,True
+117,17,Mohan Shekar,Male,30,Bike,Intermediate,4.6,Full Time,Morning,2025-10-31,True
+118,38,Yash Chopra,Male,23,Scooter,Intermediate,4.1,Full Time,Afternoon,2025-07-19,True
+119,24,Ramu Patel,Male,26,Scooter,Intermediate,4.4,Full Time,Afternoon,2025-06-11,True
+120,25,Srinath Patel,Male,27,Scooter,Intermediate,4.5,Full Time,Afternoon,2025-01-21,True
+121,7,Santosh Mane,Male,37,Bike,Experienced,5.0,Full Time,Afternoon,2025-02-02,True
+122,21,Venkatesh Goud,Male,21,Bike,Beginner,4.2,Full Time,Morning,2025-11-29,True
+123,22,Venkatesh Naidu,Male,22,Bike,Beginner,3.7,Full Time,Afternoon,2025-09-08,False
+124,20,Rohan Naik,Male,24,Scooter,Beginner,3.8,Full Time,Afternoon,2024-10-08,True
+125,16,Rohan Shetty,Male,31,Scooter,Intermediate,4.3,Full Time,Afternoon,2024-01-17,True
+126,31,Mahendra Gandhi,Male,31,Bike,Experienced,4.4,Part Time,Night,2025-03-18,True
+127,5,Dinesh Shitole,Male,38,Scooter,Experienced,4.8,Part Time,Afternoon,2024-11-03,True
+128,15,Deepa Murthy,Other,29,Bicycle,Intermediate,4.3,Part Time,Night,2024-12-11,True
+129,24,Aarav Naidu,Male,32,Scooter,Intermediate,4.4,Full Time,Afternoon,2024-11-05,True
+130,37,Anil Arora,Male,32,Bicycle,Intermediate,4.1,Full Time,Afternoon,2024-03-01,True
+131,16,Darshan Naik,Male,27,Bicycle,Intermediate,4.0,Full Time,Afternoon,2024-09-21,True
+132,13,Rohan Joshi,Male,37,Bike,Experienced,4.8,Full Time,Afternoon,2024-07-05,True
+133,20,Harsh Patel,Male,34,Scooter,Intermediate,4.4,Part Time,Morning,2025-02-03,True
+134,14,Shankar Acharya,Male,48,Bike,Experienced,5.0,Full Time,Night,2024-02-23,True
+135,36,Akash Goyal,Male,32,Scooter,Intermediate,4.1,Full Time,Morning,2025-05-14,False
+136,35,Yash Joshi,Male,18,Bicycle,Beginner,3.7,Full Time,Morning,2024-09-24,True
+137,18,Akash Shekar,Male,37,Scooter,Experienced,4.5,Full Time,Afternoon,2024-07-18,True
+138,21,Rohan Varma,Male,32,Electric Bike,Intermediate,4.1,Full Time,Night,2024-12-11,True
+139,22,Srinath Ramesh,Male,19,Scooter,Beginner,4.1,Part Time,Night,2025-01-12,True
+140,1,Umesh Sharma,Male,31,Bicycle,Intermediate,4.5,Part Time,Night,2024-12-30,True
+141,14,Aarav Joshi,Male,31,Bicycle,Intermediate,4.0,Part Time,Afternoon,2024-03-11,True
+142,17,Harsh Kamath,Male,22,Bike,Beginner,3.6,Part Time,Afternoon,2025-04-24,True
+143,21,Rajesh Varma,Male,26,Bike,Intermediate,4.2,Full Time,Morning,2025-08-10,True
+144,14,Murali Reddy,Male,31,Bike,Intermediate,4.2,Full Time,Morning,2024-05-05,True
+145,26,Nikhil Naidu,Male,21,Bike,Beginner,3.8,Full Time,Afternoon,2025-07-01,True
+146,32,Sanjiv Joshi,Male,22,Bike,Beginner,3.8,Part Time,Afternoon,2024-12-18,True
+147,15,Pradeep Gowda,Male,20,Bike,Beginner,3.8,Full Time,Night,2024-01-13,True
+148,9,Akash Ranade,Male,25,Bike,Intermediate,4.5,Full Time,Night,2025-06-17,True
+149,4,Aditya Salunkhe,Male,19,Bike,Beginner,3.5,Part Time,Morning,2024-10-20,False
+150,10,Swapnil Apte,Male,50,Bike,Experienced,4.8,Full Time,Morning,2024-12-08,True
+151,34,Naresh Khanna,Male,24,Bike,Beginner,3.6,Full Time,Afternoon,2024-04-03,True
+152,13,Vikas Reddy,Male,26,Electric Bike,Intermediate,4.4,Full Time,Night,2025-12-31,True
+153,28,Rohan Patel,Male,29,Bike,Intermediate,4.5,Full Time,Night,2025-08-07,True
+154,19,Nagaraj Prasad,Male,43,Bike,Experienced,4.8,Full Time,Afternoon,2025-06-20,True
+155,36,Akash Joshi,Male,33,Bike,Experienced,4.7,Part Time,Afternoon,2025-01-24,True
+156,30,Hasmukh Bhatt,Male,26,Electric Bike,Intermediate,4.5,Full Time,Night,2024-03-05,True
+157,28,Bhavin Bhatt,Male,23,Bike,Intermediate,4.1,Full Time,Morning,2025-03-13,True
+158,8,Aditya Ghadge,Male,28,Scooter,Intermediate,4.6,Full Time,Afternoon,2024-10-07,True
+159,24,Bhargavi Kulkarni,Female,46,Bike,Experienced,4.7,Full Time,Morning,2024-08-08,True
+160,10,Pooja Agashe,Female,31,Bike,Intermediate,4.5,Part Time,Afternoon,2025-02-06,True
+161,26,Ravi Reddy,Male,22,Bike,Intermediate,4.5,Part Time,Night,2025-09-09,True
+162,19,Ramesh Acharya,Male,26,Bike,Intermediate,4.3,Full Time,Night,2025-06-17,True
+163,2,Aditya Kulkarni,Other,22,Scooter,Intermediate,4.2,Part Time,Morning,2025-01-28,True
+164,5,Ganesh Dongre,Male,20,Bike,Beginner,3.5,Full Time,Night,2025-08-22,True
+165,4,Sunil Chaudhari,Male,29,Bike,Intermediate,4.5,Full Time,Morning,2025-08-31,True
+166,17,Kavitha Acharya,Female,18,Scooter,Beginner,4.0,Part Time,Morning,2025-02-09,True
+167,37,Rajender Kulkarni,Male,48,Bike,Experienced,4.4,Full Time,Morning,2024-01-18,True
+168,31,Hitesh Thakkar,Male,49,Bike,Experienced,4.4,Full Time,Night,2024-01-09,True
+169,21,Akash Ramesh,Male,22,Bike,Beginner,3.6,Full Time,Morning,2025-09-02,False
+170,7,Ravindra Lokhande,Male,31,Bike,Experienced,4.9,Full Time,Morning,2025-04-05,True
+171,11,Shweta Sharma,Female,20,Bike,Beginner,4.2,Full Time,Afternoon,2025-02-20,True
+172,26,Venkatesh Patel,Male,26,Bike,Intermediate,4.2,Full Time,Afternoon,2024-06-27,True
+173,30,Aditya Trivedi,Male,28,Bike,Intermediate,4.5,Full Time,Afternoon,2025-01-25,False
+174,5,Sunil Dongre,Male,30,Bike,Intermediate,4.2,Full Time,Morning,2025-02-03,True
+175,11,Kishor Apte,Male,35,Bicycle,Intermediate,4.5,Full Time,Afternoon,2025-08-09,True
+176,30,Nidhi Brahmbhatt,Female,23,Bike,Beginner,3.9,Full Time,Night,2024-07-14,True
+177,16,Harsh Patil,Male,24,Bicycle,Beginner,3.7,Full Time,Night,2024-09-16,True
+178,4,Ganesh Gaikwad,Male,30,Bike,Intermediate,4.5,Full Time,Morning,2024-10-25,True
+179,38,Vikas Arora,Male,33,Bike,Intermediate,4.1,Part Time,Night,2025-03-04,True
+180,16,Shivanna Shetty,Male,42,Scooter,Experienced,4.6,Part Time,Morning,2025-10-28,True
+181,24,Krishna Rao,Male,27,Scooter,Intermediate,4.5,Full Time,Afternoon,2025-11-24,True
+182,1,Aditya Waghmare,Male,30,Bike,Intermediate,4.2,Full Time,Afternoon,2024-09-14,True
+183,34,Deepak Chopra,Male,39,Bike,Experienced,4.5,Full Time,Afternoon,2025-08-08,True
+184,35,Aarav Khanna,Male,19,Bike,Beginner,3.8,Full Time,Morning,2025-08-22,True
+185,12,Mahadev Sharma,Male,35,Bike,Intermediate,4.3,Full Time,Night,2025-03-31,True
+186,32,Aditya Saxena,Male,34,Bike,Intermediate,4.6,Full Time,Afternoon,2025-09-07,True
+187,32,Akash Verma,Male,33,Bike,Intermediate,4.3,Full Time,Afternoon,2025-05-24,False
+188,21,Naresh Kumar,Male,46,Bike,Experienced,4.7,Full Time,Afternoon,2025-09-28,True
+189,12,Amol Limaye,Male,19,Scooter,Beginner,3.5,Full Time,Morning,2024-03-14,True
+190,5,Aditya Gaikwad,Male,28,Scooter,Intermediate,4.4,Part Time,Morning,2024-01-28,True
+191,8,Santosh Patel,Male,28,Bike,Intermediate,4.2,Full Time,Afternoon,2024-03-14,True
+192,18,Raghu Acharya,Male,21,Scooter,Beginner,3.9,Full Time,Afternoon,2025-08-02,True
+193,29,Meera Bhatt,Female,49,Bike,Experienced,4.6,Part Time,Night,2025-04-27,True
+194,25,Aarav Gupta,Male,21,Bike,Beginner,3.7,Part Time,Afternoon,2025-10-14,True
+195,30,Kajal Kulkarni,Female,46,Bike,Experienced,4.6,Full Time,Afternoon,2024-07-18,True
+196,2,Suresh Jagtap,Male,36,Electric Bike,Experienced,4.5,Full Time,Morning,2025-10-18,True
+197,39,Naresh Mathur,Male,20,Bike,Beginner,3.8,Full Time,Night,2025-12-05,True
+198,34,Rajeev Batra,Male,35,Bike,Intermediate,4.2,Full Time,Morning,2025-10-31,True
+199,4,Ravindra Patel,Male,47,Bike,Experienced,4.5,Part Time,Night,2024-02-16,True
+200,27,Milan Reddy,Male,33,Bike,Intermediate,4.1,Part Time,Afternoon,2024-09-26,True
+201,1,Suresh Gupta,Male,48,Scooter,Experienced,4.7,Full Time,Afternoon,2025-11-05,True
+202,14,Basavaraj Patil,Male,33,Electric Bike,Experienced,4.4,Full Time,Afternoon,2025-07-29,True
+203,4,Nikhil Gaikwad,Male,35,Bike,Experienced,4.9,Full Time,Afternoon,2024-01-14,True
+204,25,Aditya Sharma,Male,22,Bike,Beginner,3.9,Full Time,Morning,2024-10-02,True
+205,19,Jagadish Murthy,Male,24,Scooter,Intermediate,4.6,Full Time,Afternoon,2025-10-21,True
+206,26,Naresh Patel,Male,27,Scooter,Intermediate,4.4,Full Time,Morning,2024-09-30,False
+207,37,Rakesh Mathur,Male,26,Scooter,Intermediate,4.2,Part Time,Afternoon,2025-05-05,True
+208,16,Jagadish Patil,Male,24,Bike,Intermediate,4.0,Part Time,Afternoon,2025-01-13,True
+209,8,Ravindra Mohite,Male,35,Bicycle,Intermediate,4.1,Full Time,Afternoon,2025-09-08,True
+210,16,Pradeep Shekar,Male,35,Scooter,Intermediate,4.3,Part Time,Morning,2025-11-29,True
+211,15,Manjunath Kamath,Male,38,Bike,Experienced,4.5,Full Time,Afternoon,2025-12-28,False
+212,38,Sanya Saxena,Female,33,Scooter,Intermediate,4.2,Part Time,Afternoon,2024-07-14,True
+213,1,Vilas Salunkhe,Male,39,Bike,Experienced,4.7,Full Time,Afternoon,2024-11-06,True
+214,9,Datta Sharma,Male,25,Scooter,Intermediate,4.4,Full Time,Afternoon,2025-02-10,True
+215,33,Harsh Verma,Male,23,Bike,Beginner,3.6,Full Time,Night,2025-09-25,True
+216,8,Ganesh Gupta,Male,32,Electric Bike,Intermediate,4.4,Part Time,Morning,2025-05-14,True
+217,6,Mangesh Mohite,Male,22,Scooter,Beginner,3.9,Full Time,Afternoon,2025-02-09,True
+218,36,Aditya Verma,Male,33,Bike,Intermediate,4.6,Full Time,Night,2024-06-27,True
+219,19,Sneha Kulkarni,Female,21,Scooter,Beginner,4.0,Full Time,Morning,2025-03-09,True
+220,5,Harsh Salunkhe,Male,19,Bicycle,Beginner,3.8,Full Time,Afternoon,2024-03-29,True
+221,14,Yash Joshi,Male,27,Bike,Intermediate,4.4,Full Time,Afternoon,2024-12-14,True
+222,35,Vinod Mathur,Male,27,Bike,Intermediate,4.5,Full Time,Morning,2025-03-15,True
+223,27,Hitesh Desai,Male,35,Bike,Intermediate,4.3,Full Time,Afternoon,2025-03-05,True
+224,18,Aditya Hegde,Male,33,Electric Bike,Intermediate,4.3,Part Time,Afternoon,2024-03-19,True
+225,3,Suresh Shitole,Male,33,Bike,Experienced,4.7,Full Time,Afternoon,2025-04-12,False
+226,33,Aarav Singh,Male,22,Scooter,Intermediate,4.5,Full Time,Morning,2024-05-17,True
+227,13,Swapnil Patel,Male,25,Bike,Intermediate,4.5,Part Time,Afternoon,2024-04-21,True
+228,10,Amol Patel,Male,27,Bike,Intermediate,4.2,Full Time,Afternoon,2025-05-30,True
+229,26,Venkatesh Kumar,Male,22,Bicycle,Beginner,3.5,Full Time,Afternoon,2024-12-15,True
+230,26,Niharika Ramesh,Other,43,Bike,Experienced,4.7,Full Time,Afternoon,2025-12-18,True
+231,5,Aarav Mohite,Male,24,Bicycle,Beginner,4.0,Part Time,Night,2024-11-21,True
+232,30,Yash Brahmbhatt,Male,18,Scooter,Beginner,3.6,Full Time,Afternoon,2025-06-01,True
+233,38,Vinod Khanna,Male,28,Bike,Experienced,4.6,Full Time,Afternoon,2025-11-10,True
+234,32,Harsh Saxena,Male,46,Scooter,Experienced,4.7,Full Time,Morning,2025-04-21,True
+235,24,Mallesh Patil,Male,50,Bike,Experienced,4.5,Part Time,Afternoon,2024-05-30,True
+236,2,Santosh Joshi,Male,18,Scooter,Beginner,4.0,Full Time,Morning,2025-04-22,True
+237,6,Mangesh Sharma,Male,24,Bike,Intermediate,4.2,Full Time,Morning,2024-06-15,True
+238,11,Bharat Bapat,Male,37,Bike,Experienced,4.5,Full Time,Night,2025-07-07,True
+239,33,Pankaj Batra,Male,28,Bike,Experienced,4.6,Full Time,Night,2025-07-21,True
+240,28,Ananya Mehta,Female,29,Scooter,Intermediate,4.0,Full Time,Afternoon,2025-08-24,True
+241,35,Yash Malhotra,Male,33,Scooter,Intermediate,4.4,Part Time,Afternoon,2024-07-19,True
+242,25,Pooja Patil,Female,22,Electric Bike,Intermediate,4.1,Part Time,Night,2024-11-04,True
+243,19,Nikhil Gupta,Male,23,Scooter,Beginner,3.7,Full Time,Morning,2025-05-16,True
+244,6,Umesh Reddy,Male,18,Scooter,Beginner,4.0,Full Time,Night,2025-03-10,True
+245,27,Sneha Dave,Other,31,Scooter,Experienced,4.9,Part Time,Night,2024-05-19,True
+246,17,Raghu Kulkarni,Male,31,Bicycle,Intermediate,4.3,Full Time,Afternoon,2025-04-20,True
+247,23,Rajesh Kumar,Male,39,Bike,Experienced,4.4,Full Time,Night,2025-04-22,True
+248,27,Yash Trivedi,Male,23,Scooter,Beginner,3.9,Full Time,Afternoon,2024-06-30,True
+249,31,Rohan Gupta,Male,33,Scooter,Intermediate,4.5,Full Time,Morning,2024-07-13,True
+250,1,Aditya Mane,Male,20,Bike,Beginner,3.5,Full Time,Afternoon,2025-02-16,True
+251,13,Shailesh Gupta,Male,41,Bike,Experienced,4.6,Full Time,Night,2025-04-21,True
+252,7,Vilas Jagtap,Male,25,Bike,Intermediate,4.2,Part Time,Morning,2025-09-16,True
+253,15,Shivanna Naik,Male,46,Bike,Experienced,4.6,Full Time,Morning,2024-03-09,True
+254,1,Harsh Kamble,Male,18,Bicycle,Beginner,4.2,Full Time,Morning,2025-02-07,True
+255,15,Nagaraj Shenoy,Male,36,Electric Bike,Experienced,4.6,Full Time,Night,2024-08-24,False
+256,12,Aarav Gupta,Male,27,Bicycle,Intermediate,4.6,Part Time,Night,2024-02-05,True
+257,6,Mangesh Patel,Male,29,Bike,Intermediate,4.4,Full Time,Morning,2024-04-16,True
+258,9,Rohan Sathe,Male,22,Bike,Intermediate,4.5,Full Time,Morning,2024-01-27,True
+259,25,Harsh Naidu,Male,26,Scooter,Intermediate,4.5,Full Time,Night,2024-05-21,False
+260,4,Rohan Gaikwad,Male,22,Bike,Intermediate,4.1,Part Time,Afternoon,2025-04-27,True
+261,11,Rohan Agashe,Male,29,Bike,Intermediate,4.0,Part Time,Night,2025-04-10,True
+262,7,Prakash Reddy,Male,24,Bike,Intermediate,4.1,Full Time,Night,2024-11-24,True
+263,30,Vipul Bhatt,Male,44,Bike,Experienced,4.8,Full Time,Afternoon,2024-02-29,True
+264,2,Harsh Patil,Male,37,Bike,Experienced,4.4,Part Time,Morning,2025-01-08,True
+265,10,Nikhil Karandikar,Male,32,Bicycle,Intermediate,4.2,Full Time,Morning,2025-11-17,True
+266,20,Nagaraj Patel,Male,43,Scooter,Experienced,5.0,Full Time,Afternoon,2025-03-28,True
+267,39,Aditya Sharma,Male,35,Bike,Intermediate,4.0,Full Time,Afternoon,2025-04-01,True
+268,16,Shivanna Shekar,Male,22,Bike,Intermediate,4.1,Full Time,Afternoon,2025-12-11,True
+269,37,Nikhil Tandon,Male,24,Bike,Beginner,3.7,Full Time,Afternoon,2025-10-28,True
+270,30,Mahendra Brahmbhatt,Male,22,Bicycle,Intermediate,4.4,Full Time,Night,2025-10-03,True
+271,7,Aditya Dongre,Male,18,Scooter,Beginner,3.9,Part Time,Morning,2025-09-09,True
+272,6,Aarav Joshi,Male,19,Bike,Beginner,3.5,Full Time,Night,2025-06-09,True
+273,21,Madhav Ramesh,Male,25,Scooter,Intermediate,4.2,Full Time,Afternoon,2024-09-22,True
+274,23,Yash Yadav,Male,23,Scooter,Intermediate,4.3,Full Time,Night,2025-01-09,True
+275,39,Pankaj Goyal,Male,34,Bike,Intermediate,4.5,Full Time,Afternoon,2024-08-17,True
+276,23,Srinivas Patel,Male,22,Bike,Intermediate,4.2,Full Time,Morning,2025-10-31,True
+277,20,Akash Gupta,Male,24,Scooter,Beginner,3.7,Full Time,Afternoon,2025-10-28,True
+278,7,Aditya Mohite,Male,28,Bike,Intermediate,4.4,Full Time,Afternoon,2024-02-23,True
+279,6,Ananya Jagtap,Female,27,Scooter,Intermediate,4.4,Full Time,Morning,2024-06-19,True
+280,29,Nirav Pandya,Male,22,Bike,Intermediate,4.2,Full Time,Afternoon,2024-04-25,True
+281,31,Sanjay Gupta,Male,49,Scooter,Experienced,4.5,Full Time,Night,2025-02-26,True
+282,3,Riya Chaudhari,Female,22,Scooter,Beginner,3.9,Full Time,Afternoon,2025-10-31,True
+283,19,Shankar Reddy,Male,28,Bike,Intermediate,4.2,Full Time,Morning,2024-04-15,True
+284,36,Rohan Verma,Male,32,Scooter,Intermediate,4.5,Full Time,Afternoon,2024-04-03,True
+285,23,Rajesh Raju,Male,47,Bike,Experienced,4.6,Full Time,Afternoon,2024-10-15,True
+286,32,Vinod Malhotra,Male,23,Electric Bike,Intermediate,4.4,Full Time,Morning,2024-12-27,True
+287,18,Harsh Naik,Male,19,Electric Bike,Beginner,3.5,Full Time,Afternoon,2024-11-09,True
+288,15,Yash Kamath,Male,27,Scooter,Intermediate,4.1,Full Time,Afternoon,2025-12-24,True
+289,18,Nikhil Joshi,Male,35,Scooter,Intermediate,4.3,Full Time,Night,2025-04-28,True
+290,12,Yash Oak,Male,45,Scooter,Experienced,4.9,Full Time,Morning,2025-09-02,False
+291,10,Aditya Lele,Male,44,Bike,Experienced,5.0,Full Time,Morning,2024-04-03,True
+292,26,Chandra Sai,Male,24,Bike,Intermediate,4.1,Part Time,Afternoon,2025-10-02,True
+293,14,Rohan Gowda,Male,34,Bike,Intermediate,4.0,Full Time,Night,2024-06-26,True
+294,39,Nikhil Reddy,Male,23,Bike,Intermediate,4.5,Full Time,Afternoon,2025-09-20,True
+295,3,Akash Reddy,Male,33,Bike,Intermediate,4.3,Full Time,Afternoon,2025-09-09,False
+296,23,Niharika Raju,Female,30,Bike,Intermediate,4.2,Full Time,Morning,2025-02-13,True
+297,9,Rohan Reddy,Male,46,Bike,Experienced,4.7,Full Time,Afternoon,2024-05-09,False
+298,13,Shailesh Reddy,Male,23,Bike,Intermediate,4.5,Part Time,Morning,2024-01-03,True
+299,34,Yash Gupta,Male,24,Scooter,Intermediate,4.4,Full Time,Morning,2024-11-29,True
+300,12,Ajinkya Agashe,Male,21,Scooter,Beginner,3.6,Full Time,Morning,2025-05-22,True
