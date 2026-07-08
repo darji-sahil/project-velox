@@ -36,6 +36,8 @@ def generate_orders():
         OUTPUT_FOLDER + "customers.csv"
     )
 
+
+
     restaurants_df = pd.read_csv(
         OUTPUT_FOLDER + "restaurants.csv"
     )
