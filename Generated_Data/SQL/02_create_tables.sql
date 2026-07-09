@@ -194,11 +194,10 @@ CREATE TABLE customers (
     signup_date DATE NOT NULL,
 
     customer_segment ENUM(
-
-        'New',
-        'Regular',
-        'Premium'
-
+    'Student',
+    'Working Professional',
+    'Family',
+    'Food Enthusiast'
     ) NOT NULL,
 
     is_active BOOLEAN NOT NULL,
