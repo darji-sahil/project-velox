@@ -2739,3 +2739,925 @@ Recommendation
   opportunities across the delivery network.
 
 ----------------------------------------------------------------------------*/
+
+/******************************************************************************
+SECTION 3 : RESTAURANT ANALYTICS
+
+Primary Stakeholder : Restaurant Partners / Restaurant Managers
+
+Purpose
+
+Provides restaurant partners with comprehensive insights into revenue,
+customer demand, menu performance, business growth, customer satisfaction,
+and operational performance to support data-driven decisions that improve
+sales, profitability, and customer experience.
+
+******************************************************************************/
+
+/*==============================================================================
+Business Question
+
+Which restaurants generate the highest total revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Identify the highest revenue-generating restaurant partners across the
+platform.
+
+Business Value
+--------------
+Helps restaurant partners benchmark their financial performance against
+competitors and identify top-performing businesses.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS revenue_rank,
+    r.restaurant_name,
+    ROUND(SUM(o.final_amount),2) AS total_revenue
+FROM restaurants r
+JOIN orders o
+    ON r.restaurant_id = o.restaurant_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    r.restaurant_name
+ORDER BY
+    revenue_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Pizza Nation Corner generated the highest restaurant revenue on the
+  platform with ₹1,265,278.70, followed by Orient Kitchen Kitchen and
+  Cool Drinks Kitchen.
+
+• The Top 10 restaurants collectively demonstrate strong revenue
+  concentration, indicating that a relatively small group of restaurant
+  partners contributes significantly to platform revenue.
+
+• High-performing restaurants provide valuable benchmarks for revenue
+  optimization strategies across the platform.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Study the operational and menu strategies of the highest revenue-generating
+  restaurants and share best practices across partner restaurants.
+
+• Encourage mid-performing restaurants to adopt successful pricing,
+  promotional and customer engagement strategies.
+
+• Monitor revenue rankings regularly to identify emerging high-performing
+  restaurant partners.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants receive the highest number of completed orders?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer demand across restaurant partners.
+
+Business Value
+--------------
+Helps restaurants benchmark customer demand and evaluate overall business
+volume.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS order_rank,
+    r.restaurant_name,
+    COUNT(*) AS completed_orders
+FROM restaurants r
+JOIN orders o
+    ON r.restaurant_id = o.restaurant_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    r.restaurant_name
+ORDER BY
+    order_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Orient Kitchen Kitchen processed the highest number of completed orders
+  (1,264), narrowly outperforming Pizza Nation Corner (1,222).
+
+• Several restaurants maintain consistently high customer demand, indicating
+  strong market presence and customer loyalty.
+
+• Order volume does not always correspond directly with total revenue,
+  highlighting differences in average customer spending across restaurants.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Help lower-volume restaurants improve customer acquisition through targeted
+  promotional campaigns and improved menu visibility.
+
+• Continue monitoring order trends to identify changes in customer demand.
+
+• Benchmark operational practices of high-volume restaurants to improve
+  overall restaurant performance.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants achieve the highest average order value?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate the average customer spending per completed order for each
+restaurant.
+
+Business Value
+--------------
+Helps restaurants understand pricing effectiveness and identify
+opportunities to increase customer spending.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY AVG(o.final_amount) DESC) AS aov_rank,
+    r.restaurant_name,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM restaurants r
+JOIN orders o
+    ON r.restaurant_id = o.restaurant_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    r.restaurant_name
+HAVING COUNT(*) >= 100
+ORDER BY
+    aov_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Juice Junction Cafe achieved the highest average order value at
+  ₹1,842.88 per completed order, indicating strong customer spending.
+
+• Beverage-focused and premium restaurants dominate the highest average
+  order value rankings, suggesting successful pricing or upselling
+  strategies.
+
+• Restaurants with high average order values may generate strong revenue
+  even with comparatively fewer completed orders.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Encourage restaurants to increase average order value through combo meals,
+  premium offerings and personalized upselling strategies.
+
+• Analyze pricing strategies of high-performing restaurants to identify
+  practices that can be replicated across the platform.
+
+• Monitor average order value alongside order volume to maintain balanced
+  revenue growth.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurant categories generate the highest platform revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare revenue performance across different restaurant categories.
+
+Business Value
+--------------
+Supports restaurant investment decisions and identifies cuisine segments
+driving overall platform revenue.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS category_rank,
+    rc.category_name,
+    ROUND(SUM(o.final_amount),2) AS total_revenue
+FROM restaurant_categories rc
+JOIN restaurants r
+    ON rc.category_id = r.category_id
+JOIN orders o
+    ON r.restaurant_id = o.restaurant_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    rc.category_name
+ORDER BY
+    category_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• North Indian cuisine generated the highest platform revenue
+  (₹5.77 million), followed by Pizza and Chinese restaurants.
+
+• The Top 3 restaurant categories collectively contribute a substantial
+  share of overall platform revenue, reflecting strong customer demand.
+
+• Cuisine preferences remain diversified, with multiple categories
+  contributing significantly to business performance.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue strengthening partnerships within high-performing cuisine
+  categories while expanding successful restaurant brands.
+
+• Promote emerging cuisine categories through targeted marketing campaigns
+  to diversify platform revenue.
+
+• Periodically review category performance to support restaurant onboarding
+  strategies.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants receive the highest average customer ratings?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer satisfaction across restaurant partners.
+
+Business Value
+--------------
+Helps restaurants benchmark customer satisfaction and identify businesses
+delivering consistently positive dining experiences.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY AVG(rv.rating) DESC) AS rating_rank,
+    r.restaurant_name,
+    ROUND(AVG(rv.rating),2) AS average_rating
+FROM restaurants r
+JOIN reviews rv
+    ON r.restaurant_id = rv.restaurant_id
+GROUP BY
+    r.restaurant_name
+HAVING COUNT(*) >= 100
+ORDER BY
+    rating_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Grill Nation Kitchen recorded the highest average customer rating (4.23),
+  closely followed by Smoothie Point Corner and Biryani Junction House.
+
+• Customer ratings remain consistently high across most restaurants,
+  reflecting a generally positive customer dining experience.
+
+• The narrow variation in ratings suggests stable service quality throughout
+  the restaurant network.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Recognize highly rated restaurants as quality benchmarks across the
+  platform.
+
+• Encourage lower-rated restaurants to adopt customer service practices from
+  consistently high-performing partners.
+
+• Continue monitoring customer feedback to support continuous quality
+  improvement.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants experience the highest cancellation rates?
+
+==============================================================================
+
+Business Objective
+------------------
+Identify restaurants contributing disproportionately to order
+cancellations.
+
+Business Value
+--------------
+Enables restaurant partners to improve operational reliability and reduce
+avoidable order cancellations.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (
+        ORDER BY
+            SUM(o.order_status = 'Cancelled') * 100.0 / COUNT(*) DESC
+    ) AS cancellation_rank,
+    r.restaurant_name,
+    COUNT(*) AS total_orders,
+    SUM(o.order_status = 'Cancelled') AS cancelled_orders,
+    ROUND(
+        SUM(o.order_status = 'Cancelled') * 100.0 / COUNT(*),
+        2
+    ) AS cancellation_rate
+FROM restaurants r
+JOIN orders o
+    ON r.restaurant_id = o.restaurant_id
+GROUP BY
+    r.restaurant_name
+HAVING COUNT(*) >= 100
+ORDER BY
+    cancellation_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• The Curry House Corner recorded the highest cancellation rate (9.20%),
+  followed by Urban Slice House and Biryani Junction House.
+
+• Cancellation rates vary considerably across restaurants, indicating that
+  operational performance differs significantly between restaurant partners.
+
+• High cancellation rates may negatively impact customer satisfaction,
+  restaurant reputation and long-term revenue generation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Work with restaurants exhibiting high cancellation rates to identify
+  operational bottlenecks and improve order fulfillment reliability.
+
+• Monitor cancellation trends regularly and establish acceptable operational
+  performance benchmarks.
+
+• Encourage restaurants with consistently low cancellation rates to share
+  operational best practices across the partner network.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants generate the highest average daily revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate the consistency of restaurant revenue generation over time.
+
+Business Value
+--------------
+Helps restaurant partners identify businesses that sustain strong daily
+performance rather than relying solely on total revenue.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH daily_revenue AS
+(
+    SELECT
+        restaurant_id,
+        DATE(order_timestamp) AS order_date,
+        SUM(final_amount) AS daily_revenue
+    FROM orders
+    WHERE order_status = 'Delivered'
+    GROUP BY
+        restaurant_id,
+        DATE(order_timestamp)
+)
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY AVG(d.daily_revenue) DESC) AS daily_rank,
+    r.restaurant_name,
+    ROUND(AVG(d.daily_revenue),2) AS average_daily_revenue
+FROM restaurants r
+JOIN daily_revenue d
+    ON r.restaurant_id = d.restaurant_id
+GROUP BY
+    r.restaurant_name
+ORDER BY
+    daily_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Juice Junction Cafe generated the highest average daily revenue
+  (₹2,514.92), followed by Cool Drinks Kitchen and Fresh Sip House.
+
+• Several restaurants demonstrate consistently strong daily revenue,
+  indicating stable customer demand rather than isolated sales spikes.
+
+• Average daily revenue provides a more balanced measure of restaurant
+  performance than total revenue alone by accounting for day-to-day
+  business consistency.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Track average daily revenue alongside total revenue to monitor sustainable
+  business growth.
+
+• Identify operational practices of restaurants with consistently strong
+  daily performance and encourage wider adoption across partner restaurants.
+
+• Use daily revenue trends to support staffing, inventory planning and
+  long-term restaurant growth strategies.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which menu items generate the highest total revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Identify the menu items that contribute the highest revenue across the
+platform.
+
+Business Value
+--------------
+Helps restaurant partners understand which products generate the greatest
+financial contribution and supports menu engineering decisions.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(oi.line_total) DESC) AS item_rank,
+    mi.item_name,
+    ROUND(SUM(oi.line_total),2) AS total_revenue
+FROM order_items oi
+JOIN menu_items mi
+    ON oi.menu_item_id = mi.menu_item_id
+GROUP BY
+    mi.item_name
+ORDER BY
+    item_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Chicken Biryani generated the highest menu-item revenue at ₹471.38K,
+  followed closely by Paneer Biryani and Veg Sandwich.
+
+• The top-performing menu consists primarily of Biryani, Pizza and
+  Quick-Service items, indicating strong customer demand for complete
+  meal offerings.
+
+• Revenue gradually declines beyond the top-ranked products,
+  highlighting that a relatively small group of menu items contributes
+  a significant share of restaurant revenue.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Prioritize inventory availability and kitchen capacity for the
+  highest-revenue menu items during peak business hours.
+
+• Promote complementary add-on items with top-selling dishes to
+  further increase average order value.
+
+• Periodically review lower-performing products for menu optimization,
+  pricing adjustments or promotional campaigns.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which menu items are ordered most frequently by customers?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer demand for each menu item.
+
+Business Value
+--------------
+Supports inventory planning, kitchen preparation and menu optimization.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(oi.quantity) DESC) AS popularity_rank,
+    mi.item_name,
+    SUM(oi.quantity) AS total_quantity_sold
+FROM order_items oi
+JOIN menu_items mi
+    ON oi.menu_item_id = mi.menu_item_id
+GROUP BY
+    mi.item_name
+ORDER BY
+    popularity_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Mineral Water is the most frequently ordered menu item with
+  2,369 units sold, followed by Cold Coffee and Garlic Bread.
+
+• Beverage and side items dominate order volume, demonstrating
+  strong attachment purchases alongside primary meals.
+
+• High order frequency does not always translate into highest
+  revenue, emphasizing the importance of evaluating both demand
+  and profitability together.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue bundling frequently ordered beverages and side items
+  with popular meals to maximize basket size.
+
+• Maintain adequate inventory levels for high-demand products to
+  minimize stock-out situations.
+
+• Monitor high-volume, low-margin items to ensure they remain
+  operationally profitable.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which item types contribute the highest restaurant revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate revenue contribution by menu item type.
+
+Business Value
+--------------
+Helps restaurants optimize their product portfolio and pricing strategy.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(oi.line_total) DESC) AS item_type_rank,
+    mi.item_type,
+    ROUND(SUM(oi.line_total),2) AS total_revenue
+FROM order_items oi
+JOIN menu_items mi
+    ON oi.menu_item_id = mi.menu_item_id
+GROUP BY
+    mi.item_type
+ORDER BY
+    item_type_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Main Course items contribute ₹24.17 million, accounting for the
+  majority of restaurant revenue.
+
+• Starter, Dessert and Beverage categories collectively generate
+  substantial additional revenue, supporting overall menu diversity.
+
+• The revenue distribution indicates that customers primarily visit
+  the platform for complete meal purchases while complementary
+  categories enhance overall order value.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue expanding the Main Course portfolio while maintaining
+  balanced menu diversity.
+
+• Cross-sell desserts and beverages alongside main meals to increase
+  average customer spend.
+
+• Review pricing strategies within each category to maximize overall
+  menu profitability.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How do customer ordering preferences differ between Vegetarian and
+Non-Vegetarian menu items?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare customer demand and revenue generated by vegetarian and
+non-vegetarian menu items.
+
+Business Value
+--------------
+Supports menu planning and helps restaurants understand changing customer
+food preferences.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN mi.is_veg = 1 THEN 'Vegetarian'
+        ELSE 'Non-Vegetarian'
+    END AS food_type,
+    SUM(oi.quantity) AS total_quantity_sold,
+    ROUND(SUM(oi.line_total),2) AS total_revenue,
+    ROUND(AVG(oi.line_total),2) AS average_order_value
+FROM order_items oi
+JOIN menu_items mi
+    ON oi.menu_item_id = mi.menu_item_id
+GROUP BY
+    food_type;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Vegetarian menu items generated ₹30.86 million from nearly
+  135 thousand units sold, representing the majority of platform demand.
+
+• Non-Vegetarian items generated fewer sales but achieved a
+  significantly higher average revenue per order (₹429.47 vs ₹309.21).
+
+• Customer demand favors Vegetarian offerings, while Non-Vegetarian
+  products contribute greater revenue efficiency per purchase.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue strengthening the Vegetarian portfolio to maintain
+  high customer demand.
+
+• Position premium Non-Vegetarian products strategically through
+  targeted promotions and upselling opportunities.
+
+• Balance menu expansion by optimizing both high-volume and
+  high-value product segments.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do promotional campaigns influence restaurant order value?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare promotional and regular restaurant orders.
+
+Business Value
+--------------
+Measures whether promotions increase restaurant sales or mainly provide
+discounts without increasing customer spending.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN promotion_id IS NULL THEN 'Regular Orders'
+        ELSE 'Promotional Orders'
+    END AS order_type,
+    COUNT(*) AS total_orders,
+    ROUND(AVG(subtotal),2) AS average_subtotal,
+    ROUND(AVG(discount_amount),2) AS average_discount,
+    ROUND(AVG(final_amount),2) AS average_final_bill
+FROM orders
+WHERE order_status='Delivered'
+GROUP BY
+    order_type;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• All delivered orders in the dataset utilized promotional offers,
+  resulting in an average discount of ₹24.78 per order.
+
+• Despite promotional discounts, the platform maintained a healthy
+  average customer bill of approximately ₹890.91.
+
+• Promotions appear to support customer acquisition while preserving
+  overall restaurant revenue generation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue evaluating promotional effectiveness using incremental
+  revenue and repeat purchase metrics.
+
+• Introduce targeted promotions instead of blanket discounts to
+  improve campaign profitability.
+
+• Periodically review discount policies to maintain an optimal
+  balance between customer acquisition and restaurant margins.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which payment methods are most preferred by restaurant customers?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze customer payment preferences for completed restaurant orders.
+
+Business Value
+--------------
+Helps restaurants understand payment behaviour and prioritize convenient
+payment options.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS payment_rank,
+    p.payment_method,
+    COUNT(*) AS total_orders
+FROM orders o
+JOIN payments p
+    ON o.payment_id = p.payment_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    p.payment_method
+ORDER BY
+    payment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Digital payment methods dominate restaurant transactions,
+  with Wallet leading at 9,514 completed orders.
+
+• Debit Card, UPI, Credit Card and Cash exhibit highly comparable
+  adoption levels, indicating balanced customer payment preferences.
+
+• The diversified payment distribution reduces dependency on any
+  single payment channel.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue supporting multiple payment options to maximize
+  customer convenience.
+
+• Monitor payment success rates across providers to maintain
+  seamless checkout experiences.
+
+• Collaborate with digital payment partners for targeted cashback
+  campaigns during seasonal demand periods.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which menu items generate the highest revenue per unit sold?
+
+==============================================================================
+
+Business Objective
+------------------
+Identify premium-performing menu items based on revenue generated for every
+unit sold.
+
+Business Value
+--------------
+Supports pricing decisions and helps restaurants identify products with
+strong revenue efficiency.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (
+        ORDER BY SUM(oi.line_total) / SUM(oi.quantity) DESC
+    ) AS efficiency_rank,
+    mi.item_name,
+    ROUND(
+        SUM(oi.line_total) / SUM(oi.quantity),
+        2
+    ) AS revenue_per_unit
+FROM order_items oi
+JOIN menu_items mi
+    ON oi.menu_item_id = mi.menu_item_id
+GROUP BY
+    mi.item_name
+HAVING SUM(oi.quantity) >= 50
+ORDER BY
+    efficiency_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Premium menu items such as Grilled Vegetables, Penne Arrabbiata
+  and Herb Rice generate the highest revenue per unit sold.
+
+• Several premium dishes achieve strong revenue efficiency despite
+  relatively lower order volumes, indicating successful premium pricing.
+
+• Lower-ranked beverage items generate substantially lower revenue
+  per unit, reflecting their role as complementary purchases rather
+  than primary revenue drivers.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Highlight premium dishes within restaurant menus to improve
+  average order value.
+
+• Bundle premium products with complementary beverages or desserts
+  to encourage higher-value purchases.
+
+• Periodically review pricing of low-performing items while preserving
+  perceived customer value.
+
+----------------------------------------------------------------------------*/
