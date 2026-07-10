@@ -1273,4 +1273,1469 @@ Recommendation
 • Use this KPI summary as the primary executive performance scorecard for
   monitoring overall platform health.
 
+/******************************************************************************
+SECTION 2 : OPERATIONS ANALYTICS
+
+Primary Stakeholder : Operations Manager
+
+Purpose
+
+Provides operational visibility into delivery performance, rider utilization,
+restaurant efficiency, order fulfillment, cancellation analysis, service level
+performance, and operational KPIs to support day-to-day decision-making and
+continuous process improvement.
+
+******************************************************************************/
+
+/*==============================================================================
+Business Question
+
+What is the average delivery time across different order statuses?
+==============================================================================
+
+Business Objective
+------------------
+Evaluate delivery performance by comparing delivery times across different
+order outcomes.
+
+Business Value
+--------------
+Helps Operations Managers assess delivery efficiency and identify operational
+delays affecting customer experience.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    order_status,
+    COUNT(order_id) AS total_orders,
+    ROUND(AVG(delivery_minutes),2) AS average_delivery_time
+FROM orders
+GROUP BY
+    order_status
+ORDER BY
+    average_delivery_time DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Successfully delivered orders required an average delivery time of
+  approximately 40 minutes, demonstrating a consistent operational service
+  level across the platform.
+
+• Cancelled orders recorded zero delivery time as expected since deliveries
+  were not completed.
+
+• The results indicate that delivery time is currently measured only for
+  completed deliveries, providing an accurate operational performance metric.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue monitoring average delivery time as a primary Service Level
+  Agreement (SLA) metric for operational performance.
+
+• Investigate deliveries exceeding the average completion time to identify
+  opportunities for improving delivery efficiency.
+
+• Establish delivery time benchmarks to continuously monitor operational
+  performance across the platform.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which delivery riders handle the highest number of completed deliveries?
+==============================================================================
+
+Business Objective
+------------------
+Identify the most productive delivery riders based on completed deliveries.
+
+Business Value
+--------------
+Supports workforce planning, rider recognition programs and performance
+evaluation.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH rider_delivery_summary AS
+(
+    SELECT
+        r.rider_name,
+        COUNT(o.order_id) AS completed_deliveries
+    FROM orders o
+    JOIN riders r
+        ON o.rider_id = r.rider_id
+    WHERE o.order_status = 'Delivered'
+    GROUP BY
+        r.rider_name
+),
+ranked_riders AS
+(
+    SELECT
+        DENSE_RANK() OVER(ORDER BY completed_deliveries DESC) AS rider_rank,
+        rider_name,
+        completed_deliveries
+    FROM rider_delivery_summary
+)
+
+SELECT *
+FROM ranked_riders
+WHERE rider_rank <= 10
+ORDER BY
+    rider_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Rohan Joshi completed the highest number of successful deliveries (448),
+  followed by Aditya Sharma (398) and Aarav Gupta (393).
+
+• The top-performing riders consistently handled substantially higher delivery
+  volumes than the remaining workforce, indicating differences in rider
+  utilization.
+
+• Delivery workload appears concentrated among a relatively small group of
+  highly productive riders.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Recognize high-performing riders through performance incentive and reward
+  programs to encourage continued operational excellence.
+
+• Review rider workload distribution to ensure delivery assignments remain
+  balanced across the workforce.
+
+• Analyze operational practices adopted by top-performing riders and
+  incorporate them into rider training programs.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does delivery performance vary across different weather conditions?
+==============================================================================
+
+Business Objective
+------------------
+Measure the operational impact of weather on delivery efficiency.
+
+Business Value
+--------------
+Supports delivery planning and resource allocation during adverse weather
+conditions.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    w.weather_condition,
+    COUNT(o.order_id) AS total_orders,
+    ROUND(AVG(o.delivery_minutes),2) AS average_delivery_time
+FROM orders o
+JOIN weather w
+    ON o.weather_id = w.weather_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    w.weather_condition
+ORDER BY
+    average_delivery_time DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Average delivery time remained remarkably consistent across all weather
+  conditions, ranging between approximately 39.8 and 40.5 minutes.
+
+• Heatwave conditions recorded the highest average delivery time, while
+  Cloudy weather demonstrated the fastest deliveries.
+
+• The minimal variation suggests that Project Velox maintains stable delivery
+  performance regardless of changing weather conditions.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining current operational standards across all weather
+  conditions to preserve delivery reliability.
+
+• Develop contingency plans for extreme weather conditions to minimize any
+  potential increase in delivery time.
+
+• Monitor weather-related delivery performance periodically to identify
+  emerging operational trends.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which delivery zones process the highest number of customer orders?
+==============================================================================
+
+Business Objective
+------------------
+Identify the busiest operational delivery zones.
+
+Business Value
+--------------
+Supports rider allocation and operational resource planning.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH zone_order_summary AS
+(
+    SELECT
+        dz.zone_name,
+        c.city_name,
+        COUNT(o.order_id) AS total_orders
+    FROM orders o
+    JOIN customers cu
+        ON o.customer_id = cu.customer_id
+    JOIN delivery_zones dz
+        ON cu.zone_id = dz.zone_id
+    JOIN cities c
+        ON dz.city_id = c.city_id
+    GROUP BY
+        dz.zone_name,
+        c.city_name
+),
+ranked_zones AS
+(
+    SELECT
+        DENSE_RANK() OVER(ORDER BY total_orders DESC) AS zone_rank,
+        city_name,
+        zone_name,
+        total_orders
+    FROM zone_order_summary
+)
+
+SELECT *
+FROM ranked_zones
+WHERE zone_rank <= 10
+ORDER BY
+    zone_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Colaba (Mumbai) processed the highest number of customer orders (1,892),
+  making it the busiest delivery zone on the platform.
+
+• Mumbai and Pune dominate the busiest operational zones, together accounting
+  for the majority of the Top 10 delivery locations.
+
+• These zones represent areas of consistently high customer demand requiring
+  efficient operational planning and resource allocation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Allocate additional delivery riders during peak periods within high-demand
+  delivery zones to maintain service quality.
+
+• Continuously monitor order growth across delivery zones to support future
+  operational expansion.
+
+• Prioritize operational optimization initiatives within the busiest delivery
+  zones to reduce delivery delays.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants experience the highest order cancellation rates?
+==============================================================================
+
+Business Objective
+------------------
+Identify restaurants contributing most to order cancellations.
+
+Business Value
+--------------
+Helps Operations Managers reduce cancellations through targeted operational
+improvements.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH restaurant_cancellations AS
+(
+    SELECT
+        r.restaurant_name,
+        COUNT(o.order_id) AS cancelled_orders
+    FROM orders o
+    JOIN restaurants r
+        ON o.restaurant_id = r.restaurant_id
+    WHERE o.order_status = 'Cancelled'
+    GROUP BY
+        r.restaurant_name
+),
+ranked_restaurants AS
+(
+    SELECT
+        DENSE_RANK() OVER(ORDER BY cancelled_orders DESC) AS cancellation_rank,
+        restaurant_name,
+        cancelled_orders
+    FROM restaurant_cancellations
+)
+
+SELECT *
+FROM ranked_restaurants
+WHERE cancellation_rank <= 10
+ORDER BY
+    cancellation_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Cafe Aroma Express experienced the highest number of cancelled orders (88),
+  followed by Orient Kitchen Kitchen (80) and Pizza Nation Corner (76).
+
+• Order cancellations are concentrated among a relatively small number of
+  restaurants, indicating potential operational inefficiencies at specific
+  restaurant partners.
+
+• Identifying and addressing the causes of cancellations within these
+  restaurants could significantly improve overall operational performance.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Conduct operational reviews with the highest cancellation restaurants to
+  identify process improvement opportunities.
+
+• Monitor restaurant preparation time, inventory availability and order
+  acceptance practices to reduce cancellations.
+
+• Track cancellation trends regularly to measure the effectiveness of
+  operational improvement initiatives.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How efficiently are riders utilized across different work shifts?
+==============================================================================
+
+Business Objective
+------------------
+Evaluate rider workload distribution across operational shifts.
+
+Business Value
+--------------
+Supports workforce scheduling and balanced rider allocation.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    r.shift,
+    COUNT(DISTINCT r.rider_id) AS total_riders,
+    COUNT(o.order_id) AS completed_orders,
+    ROUND(
+        COUNT(o.order_id) /
+        COUNT(DISTINCT r.rider_id),
+        2
+    ) AS average_orders_per_rider
+FROM riders r
+LEFT JOIN orders o
+    ON r.rider_id = o.rider_id
+    AND o.order_status = 'Delivered'
+GROUP BY
+    r.shift
+ORDER BY
+    average_orders_per_rider DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Night shifts recorded the highest rider utilization, averaging
+  158.03 completed deliveries per rider despite having the smallest rider
+  workforce (78 riders).
+
+• Afternoon shifts processed the highest overall delivery volume
+  (20,961 completed orders) due to having the largest rider workforce,
+  while maintaining a comparable average workload per rider.
+
+• Rider utilization remained highly consistent across all operational shifts,
+  varying by less than two deliveries per rider, indicating balanced workload
+  distribution and effective workforce planning.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining balanced rider scheduling across operational shifts to
+  sustain consistent delivery performance.
+
+• Monitor future demand growth to ensure rider capacity remains aligned with
+  customer ordering patterns.
+
+• Use rider utilization metrics to optimize workforce planning and shift
+  allocation decisions.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does delivery time vary across different cities?
+==============================================================================
+
+Business Objective
+------------------
+Compare operational delivery efficiency across all operating cities.
+
+Business Value
+--------------
+Helps identify cities requiring operational improvements and resource
+optimization.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    c.city_name,
+    COUNT(o.order_id) AS delivered_orders,
+    ROUND(AVG(o.delivery_minutes),2) AS average_delivery_time
+FROM orders o
+JOIN customers cu
+    ON o.customer_id = cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id = dz.zone_id
+JOIN cities c
+    ON dz.city_id = c.city_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    c.city_name
+ORDER BY
+    average_delivery_time DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Mumbai recorded the highest average delivery time (40.12 minutes), while
+  Ahmedabad achieved the fastest average delivery time (39.83 minutes).
+
+• Average delivery times varied by less than one minute across all operating
+  cities, demonstrating highly consistent operational performance.
+
+• The narrow variation indicates standardized delivery processes and effective
+  operational execution throughout the platform.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Maintain standardized operational procedures across all cities to preserve
+  consistent delivery performance.
+
+• Continue monitoring city-level delivery metrics to identify emerging
+  operational challenges before they affect customer experience.
+
+• Use city-level delivery performance as a benchmark for evaluating future
+  operational expansion.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+What are the most common reasons for order cancellations?
+==============================================================================
+
+Business Objective
+------------------
+Identify the primary operational reasons behind order cancellations.
+
+Business Value
+--------------
+Helps Operations Managers prioritize process improvements that reduce
+avoidable order cancellations and improve customer satisfaction.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    cancellation_reason,
+    COUNT(order_id) AS cancelled_orders,
+    ROUND(
+        COUNT(order_id) * 100.0 /
+        SUM(COUNT(order_id)) OVER(),
+        2
+    ) AS cancellation_percentage
+FROM orders
+WHERE order_status = 'Cancelled'
+GROUP BY
+    cancellation_reason
+ORDER BY
+    cancelled_orders DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Restaurant Closed was the leading cause of order cancellations,
+  accounting for 769 cancelled orders (25.78%), closely followed by
+  Payment Failed (25.75%).
+
+• Customer Cancelled and Rider Unavailable contributed almost equally,
+  representing 24.27% and 24.20% of cancellations respectively.
+
+• The cancellation distribution is relatively balanced across all four
+  categories, indicating that operational improvements should target
+  multiple processes rather than a single failure point.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Collaborate with restaurant partners to improve operating hour management
+  and real-time restaurant availability.
+
+• Strengthen payment reliability by monitoring payment gateway failures and
+  reducing transaction interruptions.
+
+• Improve rider availability through optimized workforce scheduling during
+  peak demand periods.
+
+• Continuously monitor cancellation trends to evaluate the effectiveness of
+  operational improvement initiatives.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which weather conditions contribute to the highest order cancellation rates?
+==============================================================================
+
+Business Objective
+------------------
+Measure the relationship between weather conditions and cancelled orders.
+
+Business Value
+--------------
+Supports proactive operational planning during adverse weather conditions.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH weather_cancellations AS
+(
+    SELECT
+        w.weather_condition,
+        COUNT(*) AS total_orders,
+        SUM(o.order_status = 'Cancelled') AS cancelled_orders,
+        ROUND(
+            SUM(o.order_status = 'Cancelled') * 100.0 /
+            COUNT(*),
+            2
+        ) AS cancellation_rate
+    FROM orders o
+    JOIN weather w
+        ON o.weather_id = w.weather_id
+    GROUP BY
+        w.weather_condition
+)
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY cancellation_rate DESC) AS weather_rank,
+    weather_condition,
+    total_orders,
+    cancelled_orders,
+    cancellation_rate
+FROM weather_cancellations
+ORDER BY
+    weather_rank
+LIMIT 10;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Rainy weather recorded the highest cancellation rate (6.10%), indicating
+  that adverse weather conditions slightly increase operational disruptions.
+
+• Cancellation rates across all weather conditions remained within a narrow
+  range of 5.59% to 6.10%, demonstrating consistent operational resilience.
+
+• Despite processing the highest order volume, Sunny weather maintained a
+  cancellation rate comparable to other weather conditions.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Increase rider availability during rainy weather to minimize weather-related
+  operational disruptions.
+
+• Develop contingency plans for adverse weather conditions to maintain
+  delivery reliability.
+
+• Continue monitoring weather-driven operational performance to improve
+  demand forecasting and delivery planning.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do promoted orders require longer delivery times than regular orders?
+==============================================================================
+
+Business Objective
+------------------
+Evaluate the operational impact of promotional campaigns.
+
+Business Value
+--------------
+Helps balance marketing initiatives with delivery capacity planning.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN promotion_id = 0 THEN 'Regular Orders'
+        ELSE 'Promotional Orders'
+    END AS order_type,
+    COUNT(order_id) AS total_orders,
+    ROUND(AVG(delivery_minutes),2) AS average_delivery_time
+FROM orders
+WHERE order_status = 'Delivered'
+GROUP BY
+    order_type;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Promotional orders required an average delivery time of 40.06 minutes,
+  only marginally higher than Regular Orders (39.96 minutes).
+
+• The negligible difference indicates that promotional campaigns do not
+  significantly impact operational delivery performance.
+
+• Current delivery capacity appears sufficient to support promotional demand
+  without affecting customer service levels.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue running promotional campaigns while maintaining existing delivery
+  capacity.
+
+• Monitor delivery performance during large-scale promotional events to
+  identify potential operational bottlenecks.
+
+• Coordinate future marketing campaigns with operations planning to ensure
+  sufficient delivery resources remain available.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments generate the highest order cancellation rates?
+==============================================================================
+
+Business Objective
+------------------
+Identify customer segments experiencing higher operational failures.
+
+Business Value
+--------------
+Supports targeted operational improvements for specific customer groups.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH segment_cancellation_summary AS
+(
+    SELECT
+        c.customer_segment,
+        COUNT(*) AS total_orders,
+        SUM(o.order_status = 'Cancelled') AS cancelled_orders,
+        ROUND(
+            SUM(o.order_status = 'Cancelled') * 100.0 /
+            COUNT(*),
+            2
+        ) AS cancellation_rate
+    FROM orders o
+    JOIN customers c
+        ON o.customer_id = c.customer_id
+    GROUP BY
+        c.customer_segment
+)
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY cancellation_rate DESC) AS segment_rank,
+    customer_segment,
+    total_orders,
+    cancelled_orders,
+    cancellation_rate
+FROM segment_cancellation_summary
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Student customers experienced the highest cancellation rate (6.30%),
+  followed by Working Professionals (5.91%).
+
+• Family and Food Enthusiast segments demonstrated slightly lower
+  cancellation rates, indicating relatively stable operational performance.
+
+• Although cancellation rates vary across customer segments, the overall
+  differences remain modest, suggesting consistent service quality across
+  the customer base.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Investigate factors contributing to higher cancellation rates among
+  Student customers, particularly during peak demand periods.
+
+• Monitor customer segment performance regularly to identify emerging
+  operational trends.
+
+• Develop targeted operational improvements for segments demonstrating
+  consistently higher cancellation rates.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurants have the longest average delivery times?
+==============================================================================
+
+Business Objective
+------------------
+Identify restaurant partners contributing to slower deliveries.
+
+Business Value
+--------------
+Supports operational collaboration with restaurant partners to improve
+delivery efficiency.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH restaurant_delivery_summary AS
+(
+    SELECT
+        r.restaurant_name,
+        COUNT(o.order_id) AS completed_orders,
+        ROUND(AVG(o.delivery_minutes),2) AS average_delivery_time
+    FROM orders o
+    JOIN restaurants r
+        ON o.restaurant_id = r.restaurant_id
+    WHERE o.order_status = 'Delivered'
+    GROUP BY
+        r.restaurant_name
+),
+ranked_restaurants AS
+(
+    SELECT
+        DENSE_RANK() OVER(ORDER BY average_delivery_time DESC) AS delivery_rank,
+        restaurant_name,
+        completed_orders,
+        average_delivery_time
+    FROM restaurant_delivery_summary
+)
+
+SELECT *
+FROM ranked_restaurants
+WHERE delivery_rank <= 10
+ORDER BY
+    delivery_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Spice Junction Kitchen recorded the highest average delivery time
+  (41.52 minutes), followed closely by Dum House Kitchen and
+  Noodle House Hub.
+
+• The Top 10 restaurants exhibited only minor differences in average
+  delivery time, with all values remaining close to 41 minutes.
+
+• These restaurants represent operational improvement opportunities where
+  reducing preparation or dispatch time could further enhance delivery
+  efficiency.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Collaborate with restaurant partners to optimize food preparation and
+  order dispatch processes.
+
+• Monitor delivery performance for high-volume restaurants to identify
+  recurring operational bottlenecks.
+
+• Establish restaurant-level delivery performance benchmarks to encourage
+  continuous operational improvement.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do weekend orders require longer delivery times than weekday orders?
+==============================================================================
+
+Business Objective
+------------------
+Compare operational efficiency between weekdays and weekends.
+
+Business Value
+--------------
+Supports staffing and delivery resource planning based on customer demand.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN c.is_weekend = 1 THEN 'Weekend'
+        ELSE 'Weekday'
+    END AS day_type,
+    COUNT(o.order_id) AS total_orders,
+    ROUND(AVG(o.delivery_minutes),2) AS average_delivery_time
+FROM orders o
+JOIN calendar c
+    ON o.calendar_id = c.calendar_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    day_type;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Average delivery time remained almost identical between weekdays
+  (40.03 minutes) and weekends (39.89 minutes).
+
+• Weekend demand does not appear to negatively impact delivery efficiency,
+  indicating effective operational resource planning.
+
+• The platform successfully maintains consistent service levels throughout
+  the entire week.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining balanced rider allocation throughout both weekdays
+  and weekends.
+
+• Monitor weekend demand growth periodically to ensure delivery capacity
+  remains aligned with customer demand.
+
+• Maintain current workforce planning strategies that support consistent
+  delivery performance across the week.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which payment methods experience the highest order cancellation rates?
+==============================================================================
+
+Business Objective
+------------------
+Determine whether payment methods influence operational cancellations.
+
+Business Value
+--------------
+Supports improvements in payment processing reliability and customer
+checkout experience.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH payment_cancellation_summary AS
+(
+    SELECT
+        p.payment_method,
+        COUNT(*) AS total_orders,
+        SUM(o.order_status = 'Cancelled') AS cancelled_orders,
+        ROUND(
+            SUM(o.order_status = 'Cancelled') * 100.0 /
+            COUNT(*),
+            2
+        ) AS cancellation_rate
+    FROM orders o
+    JOIN payments p
+        ON o.payment_id = p.payment_id
+    GROUP BY
+        p.payment_method
+)
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY cancellation_rate DESC) AS payment_rank,
+    payment_method,
+    total_orders,
+    cancelled_orders,
+    cancellation_rate
+FROM payment_cancellation_summary
+ORDER BY
+    payment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Wallet payments recorded the highest cancellation rate (6.20%), followed
+  closely by Credit Card transactions (6.04%).
+
+• Cancellation rates across all payment methods remained relatively
+  consistent, varying by less than one percentage point.
+
+• The small variation suggests that payment method is not currently a major
+  contributor to operational order cancellations.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue monitoring payment performance to identify emerging payment
+  reliability issues.
+
+• Collaborate with payment service providers to minimize transaction
+  failures and improve checkout reliability.
+
+• Periodically review payment-related operational metrics as part of routine
+  service quality monitoring.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+What percentage of deliveries meet the platform's Service Level Agreement
+(SLA) of 40 minutes?
+==============================================================================
+
+Business Objective
+------------------
+Measure operational compliance against the platform's delivery SLA.
+
+Business Value
+--------------
+Provides Operations Managers with a key performance indicator for monitoring
+delivery efficiency and customer service quality.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN delivery_minutes <= 40 THEN 'Within SLA'
+        ELSE 'Outside SLA'
+    END AS sla_status,
+    COUNT(order_id) AS total_deliveries,
+    ROUND(
+        COUNT(order_id) * 100.0 /
+        SUM(COUNT(*)) OVER(),
+        2
+    ) AS percentage
+FROM orders
+WHERE order_status = 'Delivered'
+GROUP BY
+    sla_status;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• 24,143 deliveries (51.35%) were completed within the platform's
+  40-minute Service Level Agreement (SLA), while 48.65% exceeded the
+  target delivery time.
+
+• The results indicate that approximately half of all completed deliveries
+  satisfy the current operational SLA, highlighting opportunities for
+  improving delivery efficiency.
+
+• SLA compliance should be continuously monitored as a key operational KPI
+  for measuring customer service performance.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Investigate deliveries exceeding the 40-minute SLA to identify operational
+  bottlenecks affecting delivery performance.
+
+• Focus improvement initiatives on restaurant preparation time, rider
+  allocation and route optimization to increase SLA compliance.
+
+• Establish periodic SLA reviews to monitor operational improvements and
+  customer service quality.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities demonstrate the highest rider productivity?
+==============================================================================
+
+Business Objective
+------------------
+Evaluate rider productivity across operating cities.
+
+Business Value
+--------------
+Supports rider workforce planning and operational resource allocation.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH city_rider_productivity AS
+(
+    SELECT
+        c.city_name,
+        COUNT(o.order_id) AS completed_orders,
+        COUNT(DISTINCT o.rider_id) AS active_riders,
+        ROUND(
+            COUNT(o.order_id) /
+            COUNT(DISTINCT o.rider_id),
+            2
+        ) AS orders_per_rider
+    FROM orders o
+    JOIN customers cu
+        ON o.customer_id = cu.customer_id
+    JOIN delivery_zones dz
+        ON cu.zone_id = dz.zone_id
+    JOIN cities c
+        ON dz.city_id = c.city_id
+    WHERE o.order_status='Delivered'
+    GROUP BY
+        c.city_name
+),
+ranked_city_productivity AS
+(
+    SELECT
+        DENSE_RANK() OVER(ORDER BY orders_per_rider DESC) AS productivity_rank,
+        city_name,
+        completed_orders,
+        active_riders,
+        orders_per_rider
+    FROM city_rider_productivity
+)
+
+SELECT *
+FROM ranked_city_productivity
+WHERE productivity_rank <= 10
+ORDER BY
+    productivity_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Hyderabad achieved the highest rider productivity with an average of
+  181.62 completed deliveries per rider, closely followed by Mumbai
+  (181.28 orders per rider).
+
+• Bengaluru, Pune and Delhi demonstrated comparable rider productivity,
+  while Ahmedabad recorded noticeably lower rider utilization.
+
+• The variation suggests opportunities to optimize rider allocation and
+  increase operational efficiency in lower-performing cities.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Review rider deployment strategies in Ahmedabad to improve rider
+  productivity and workload utilization.
+
+• Analyze operational practices followed in Hyderabad and Mumbai and
+  replicate successful approaches across other cities.
+
+• Continuously monitor rider productivity as an operational KPI to support
+  workforce planning and resource optimization.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How are customer orders distributed across operational shifts?
+==============================================================================
+
+Business Objective
+------------------
+Analyze customer demand distribution throughout the day.
+
+Business Value
+--------------
+Supports rider scheduling and operational workforce planning.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    r.shift,
+    COUNT(o.order_id) AS total_orders,
+    ROUND(
+        COUNT(o.order_id) *100.0/
+        SUM(COUNT(*)) OVER(),
+        2
+    ) AS order_percentage
+FROM orders o
+JOIN riders r
+    ON o.rider_id=r.rider_id
+GROUP BY
+    r.shift
+ORDER BY
+    total_orders DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Afternoon shifts processed the highest customer demand, accounting for
+  22,329 orders (44.66% of all platform orders).
+
+• Morning and Night shifts contributed 29.13% and 26.21% of total orders
+  respectively, indicating a balanced distribution outside peak hours.
+
+• Customer demand is strongly concentrated during the afternoon period,
+  making it the most operationally critical shift.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Allocate additional riders during afternoon shifts to support peak
+  customer demand and maintain delivery efficiency.
+
+• Optimize workforce scheduling to match customer ordering patterns across
+  different operational shifts.
+
+• Continuously monitor shift-level demand to improve operational planning
+  and resource allocation.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do festivals increase average delivery time?
+==============================================================================
+
+Business Objective
+------------------
+Measure the operational impact of festival demand.
+
+Business Value
+--------------
+Supports proactive operational planning during festival periods.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN c.festival_flag=1 THEN 'Festival'
+        ELSE 'Non-Festival'
+    END AS period,
+    COUNT(o.order_id) AS delivered_orders,
+    ROUND(AVG(o.delivery_minutes),2) AS average_delivery_time
+FROM orders o
+JOIN calendar c
+    ON o.calendar_id=c.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    period;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Average delivery time remained nearly identical during Festival
+  (39.75 minutes) and Non-Festival (39.99 minutes) periods.
+
+• Despite increased customer activity during festivals, operational
+  performance remained stable without any significant increase in delivery
+  time.
+
+• The results demonstrate that Project Velox effectively maintains service
+  quality during high-demand festival periods.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining current operational planning practices during
+  festival periods.
+
+• Monitor future festival demand growth to ensure rider capacity remains
+  aligned with customer demand.
+
+• Incorporate festival forecasting into workforce planning to maintain
+  consistent delivery performance.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does delivery performance vary across different seasons?
+==============================================================================
+
+Business Objective
+------------------
+Evaluate operational efficiency throughout different seasons.
+
+Business Value
+--------------
+Supports seasonal operational planning and delivery resource allocation.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    c.season,
+    COUNT(o.order_id) AS delivered_orders,
+    ROUND(AVG(o.delivery_minutes),2) AS average_delivery_time
+FROM orders o
+JOIN calendar c
+    ON o.calendar_id=c.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.season
+ORDER BY
+    average_delivery_time DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Summer recorded the highest average delivery time (40.10 minutes),
+  followed by Winter (39.97 minutes) and Monsoon (39.93 minutes).
+
+• Seasonal variation in delivery performance remained minimal, differing by
+  less than 0.2 minutes across all seasons.
+
+• The results indicate consistent operational performance regardless of
+  seasonal demand fluctuations.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining standardized delivery operations throughout all
+  seasons.
+
+• Monitor seasonal demand periodically to identify emerging operational
+  trends that may require additional resource allocation.
+
+• Use seasonal performance metrics to support long-term operational
+  planning.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do higher delivery fees correspond to faster deliveries?
+==============================================================================
+
+Business Objective
+------------------
+Evaluate whether delivery pricing reflects operational service levels.
+
+Business Value
+--------------
+Supports delivery pricing strategy and customer value proposition.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    delivery_fee,
+    COUNT(order_id) AS total_orders,
+    ROUND(AVG(delivery_minutes),2) AS average_delivery_time
+FROM orders
+WHERE order_status='Delivered'
+GROUP BY
+    delivery_fee
+ORDER BY
+    delivery_fee;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Average delivery time remained remarkably consistent across all delivery
+  fee categories, ranging between approximately 39.90 and 40.10 minutes.
+
+• Higher delivery fees did not correspond to faster deliveries, indicating
+  that pricing is independent of delivery speed.
+
+• Customers receive a consistent delivery experience regardless of the
+  delivery fee charged.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining uniform delivery service standards across all
+  delivery fee categories.
+
+• Review delivery pricing strategies independently of operational
+  performance metrics.
+
+• Regularly monitor delivery fee effectiveness to ensure pricing remains
+  aligned with customer expectations.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+What are the key operational KPIs summarizing platform efficiency?
+==============================================================================
+
+Business Objective
+------------------
+Provide a consolidated operational KPI summary for Operations Management.
+
+Business Value
+--------------
+Enables continuous monitoring of delivery performance, operational efficiency
+and service quality through a single KPI report.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(AVG(delivery_minutes),2) AS average_delivery_time,
+    ROUND(
+        SUM(order_status='Delivered')*100.0/
+        COUNT(*),
+        2
+    ) AS delivery_success_rate,
+    ROUND(
+        SUM(order_status='Cancelled')*100.0/
+        COUNT(*),
+        2
+    ) AS cancellation_rate,
+    COUNT(DISTINCT rider_id) AS active_riders,
+    COUNT(DISTINCT restaurant_id) AS active_restaurants,
+    ROUND(
+        COUNT(order_id)/
+        COUNT(DISTINCT rider_id),
+        2
+    ) AS average_orders_per_rider
+FROM orders;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Project Velox achieved an average delivery time of 37.60 minutes with a
+  delivery success rate of 94.03%, demonstrating strong operational
+  efficiency.
+
+• The platform maintained a low cancellation rate of only 5.97% while
+  supporting operations through 276 active riders and 120 restaurant
+  partners.
+
+• On average, each rider completed approximately 181 deliveries,
+  highlighting efficient rider utilization across the delivery network.
+
+• These operational KPIs collectively indicate a stable, scalable and
+  well-managed delivery ecosystem capable of supporting future business
+  growth.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue monitoring operational KPIs through the Operations dashboard to
+  support data-driven decision-making.
+
+• Establish operational performance benchmarks for delivery success,
+  cancellation rate and rider productivity.
+
+• Review operational KPIs regularly to identify continuous improvement
+  opportunities across the delivery network.
+
 ----------------------------------------------------------------------------*/
