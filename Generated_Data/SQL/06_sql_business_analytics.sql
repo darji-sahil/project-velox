@@ -5600,3 +5600,816 @@ Recommendation
   profitability objectives across all markets.
 
 ----------------------------------------------------------------------------*/
+
+/******************************************************************************
+SECTION 6 : CUSTOMER EXPERIENCE ANALYTICS
+
+Primary Stakeholder : Customer Experience Manager
+
+Purpose
+
+Evaluates customer satisfaction by analyzing ratings, delivery quality,
+complaints, cancellations, service consistency, and overall customer
+experience across the platform.
+
+******************************************************************************/
+
+/*==============================================================================
+Business Question
+
+How do customer ratings vary across different cities?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer satisfaction across operating cities.
+
+Business Value
+--------------
+Helps identify cities delivering the best customer experience and
+highlights locations requiring service improvement.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(r.rating) DESC
+    ) AS city_rank,
+    c.city_name,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN customers cu
+    ON r.customer_id = cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id = dz.zone_id
+JOIN cities c
+    ON dz.city_id = c.city_id
+GROUP BY
+    c.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Mumbai achieved the highest average customer rating of 4.03,
+  closely followed by Ahmedabad and Hyderabad.
+
+• All six cities maintain customer ratings around 4.0,
+  demonstrating consistently positive customer experiences.
+
+• The minimal variation across cities indicates standardized
+  service quality throughout the delivery network.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Benchmark operational best practices from the highest-rated
+  cities and replicate them across all markets.
+
+• Continuously monitor city-level customer ratings to identify
+  early signs of declining customer satisfaction.
+
+• Combine rating analysis with customer feedback to uncover
+  location-specific improvement opportunities.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does customer satisfaction vary under different weather conditions?
+
+==============================================================================
+
+Business Objective
+------------------
+Understand the relationship between weather and customer experience.
+
+Business Value
+--------------
+Helps evaluate whether adverse weather affects perceived service quality.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(r.rating) DESC
+    ) AS weather_rank,
+    w.weather_condition,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+JOIN weather w
+    ON o.weather_id = w.weather_id
+GROUP BY
+    w.weather_condition
+ORDER BY
+    weather_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Rainy weather recorded the highest average customer rating
+  at 4.02.
+
+• Heatwave conditions received the lowest average rating,
+  although customer satisfaction remained close to 4.0.
+
+• Customer experience remained remarkably stable despite
+  varying weather conditions.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue supporting delivery operations during adverse
+  weather to preserve customer satisfaction.
+
+• Monitor weather-specific operational challenges that may
+  influence customer experience.
+
+• Strengthen rider support and delivery planning during
+  extreme weather conditions.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments provide the highest ratings?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer satisfaction across different customer segments.
+
+Business Value
+--------------
+Helps understand how various customer groups perceive platform quality.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(r.rating) DESC
+    ) AS segment_rank,
+    c.customer_segment,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN customers c
+    ON r.customer_id = c.customer_id
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Food Enthusiasts provided the highest average customer
+  rating at 4.02.
+
+• Working Professionals and Students closely followed with
+  consistently high satisfaction levels.
+
+• Customer ratings remain highly consistent across all
+  customer segments.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue delivering personalized experiences across all
+  customer segments.
+
+• Collect detailed customer feedback from comparatively
+  lower-rated segments to identify improvement areas.
+
+• Maintain consistent service quality irrespective of
+  customer demographics.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does delivery time influence customer ratings?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate whether faster deliveries improve customer satisfaction.
+
+Business Value
+--------------
+Supports operational improvements aimed at increasing customer ratings.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN o.delivery_minutes <= 30 THEN 'Within 30 Minutes'
+        WHEN o.delivery_minutes <= 45 THEN '31–45 Minutes'
+        ELSE 'Above 45 Minutes'
+    END AS delivery_time_group,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    delivery_time_group
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Orders delivered within 31-45 minutes achieved the highest
+  average customer rating at 4.02.
+
+• Customer ratings remain nearly identical across all
+  delivery-time categories.
+
+• Overall satisfaction appears to depend on multiple service
+  factors beyond delivery speed alone.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue focusing on complete customer experience rather
+  than delivery speed alone.
+
+• Monitor food quality, packaging, and communication alongside
+  delivery performance.
+
+• Investigate additional service factors influencing customer
+  satisfaction beyond delivery time.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+What is the overall distribution of customer ratings?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze the spread of customer ratings across the platform.
+
+Business Value
+--------------
+Provides an overall view of customer satisfaction and review quality.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    rating,
+    COUNT(*) AS total_reviews,
+    ROUND(
+        COUNT(*)*100.0/
+        (SELECT COUNT(*) FROM reviews),
+        2
+    ) AS percentage_of_reviews
+FROM reviews
+GROUP BY
+    rating
+ORDER BY
+    rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Nearly 75% of all customer reviews consist of 4-star and
+  5-star ratings, indicating strong overall satisfaction.
+
+• Five-star ratings account for approximately 39.78% of all
+  customer feedback.
+
+• Only a small proportion of customers provided 1-star or
+  2-star ratings, reflecting relatively few poor experiences.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Maintain existing operational standards that consistently
+  generate high customer satisfaction.
+
+• Analyze low-rated reviews to identify recurring service
+  issues and improvement opportunities.
+
+• Recognize high-performing restaurants and delivery partners
+  contributing to exceptional customer experiences.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do promotional discounts improve customer satisfaction?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate whether customers receiving higher promotional discounts
+provide better ratings.
+
+Business Value
+--------------
+Helps determine whether promotional spending positively influences
+customer satisfaction and customer perception.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN o.discount_amount = 0 THEN 'No Discount'
+        WHEN o.discount_amount <= 25 THEN 'Low Discount'
+        WHEN o.discount_amount <= 40 THEN 'Medium Discount'
+        ELSE 'High Discount'
+    END AS discount_category,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+GROUP BY
+    discount_category
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Orders receiving medium discounts achieved the highest average
+  customer rating (4.03), followed closely by high-discount orders
+  (4.02).
+
+• Orders without discounts still maintained a strong customer rating
+  of 4.00, indicating that service quality drives satisfaction beyond
+  promotional offers.
+
+• Low-discount orders recorded the lowest average rating (3.97),
+  suggesting smaller discounts may not significantly influence the
+  overall customer experience.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue offering meaningful promotional discounts during targeted
+  campaigns rather than frequent low-value discounts.
+
+• Focus on improving delivery and food quality alongside promotions,
+  as customer satisfaction remains high even without discounts.
+
+• Periodically evaluate whether promotional spending produces
+  measurable improvements in customer satisfaction.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which payment methods are associated with the highest customer satisfaction?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer satisfaction across different payment methods.
+
+Business Value
+--------------
+Helps identify whether payment experience influences customer ratings.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(r.rating) DESC
+    ) AS payment_rank,
+    p.payment_method,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+JOIN payments p
+    ON o.payment_id = p.payment_id
+GROUP BY
+    p.payment_method
+ORDER BY
+    payment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Credit Card and UPI transactions achieved the highest average
+  customer rating (4.02).
+
+• Debit Card, Cash and Wallet payments all maintained ratings close
+  to 4.00, indicating consistently positive customer experiences
+  across payment methods.
+
+• The narrow rating variation demonstrates that payment method has
+  minimal influence on overall customer satisfaction.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue supporting all major payment options to maximize customer
+  convenience.
+
+• Prioritize payment reliability and transaction success rates rather
+  than promoting one payment method over another.
+
+• Partner with digital payment providers for cashback campaigns
+  without compromising checkout simplicity.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does order value influence customer satisfaction?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze customer ratings across different order value ranges.
+
+Business Value
+--------------
+Determines whether higher-value orders receive better customer
+experiences.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN o.final_amount < 500 THEN 'Below ₹500'
+        WHEN o.final_amount < 1000 THEN '₹500–₹999'
+        ELSE '₹1000 & Above'
+    END AS order_value_range,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+GROUP BY
+    order_value_range
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Customers placing orders below ₹500 provided the highest average
+  rating (4.02), while orders exceeding ₹1000 received the lowest
+  average rating (3.99).
+
+• Customer satisfaction remains consistently high across all spending
+  levels, with only a marginal variation of 0.03 rating points.
+
+• Higher order values do not necessarily translate into better
+  customer experiences, suggesting expectations increase with
+  larger purchases.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Focus on maintaining premium service quality for high-value
+  orders to match customer expectations.
+
+• Monitor customer feedback on expensive orders to identify
+  service gaps affecting satisfaction.
+
+• Consider offering personalized post-order support or loyalty
+  benefits for high-value customers to enhance their experience.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Do repeat customers provide higher ratings than infrequent customers?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare customer satisfaction based on purchase frequency.
+
+Business Value
+--------------
+Helps understand whether customer loyalty translates into
+better customer experience.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH customer_orders AS
+(
+SELECT
+    customer_id,
+    COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+)
+
+SELECT
+    CASE
+        WHEN co.total_orders = 1 THEN 'One-Time Customer'
+        WHEN co.total_orders <= 5 THEN 'Occasional Customer'
+        ELSE 'Repeat Customer'
+    END AS customer_type,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN customer_orders co
+    ON r.customer_id = co.customer_id
+GROUP BY
+    customer_type
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Repeat customers submitted over 28,000 reviews with an average
+  rating of 4.01.
+
+• Existing customers continue to report consistently positive
+  experiences, indicating strong customer retention and satisfaction.
+
+• Sustaining high ratings among repeat customers strengthens
+  long-term customer loyalty and lifetime value.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue investing in loyalty programs that encourage repeat
+  purchases.
+
+• Regularly analyze repeat customer feedback to identify improvement
+  opportunities before satisfaction declines.
+
+• Reward highly engaged customers through exclusive offers and
+  personalized experiences to strengthen retention.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does customer satisfaction vary across different times of the day?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate customer ratings during Morning, Afternoon,
+and Night deliveries.
+
+Business Value
+--------------
+Helps identify time periods delivering the best customer
+experience.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN HOUR(o.order_timestamp) BETWEEN 6 AND 11 THEN 'Morning'
+        WHEN HOUR(o.order_timestamp) BETWEEN 12 AND 17 THEN 'Afternoon'
+        ELSE 'Night'
+    END AS time_of_day,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+GROUP BY
+    time_of_day
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Morning orders achieved the highest customer satisfaction with an
+  average rating of 4.03.
+
+• Afternoon and Night orders received nearly identical ratings of
+  4.00 despite accounting for the majority of customer reviews.
+
+• Service quality remains consistently strong across different
+  periods of the day with only minimal rating variation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Maintain current operational standards during morning hours
+  as a benchmark for service quality.
+
+• Review staffing levels and delivery efficiency during afternoon
+  and night peak periods to preserve customer satisfaction.
+
+• Continue monitoring ratings by time of day to detect any
+  emerging operational bottlenecks.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How do delivery fee ranges influence customer satisfaction?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze customer ratings across different delivery fee ranges.
+
+Business Value
+--------------
+Determines whether higher delivery charges affect
+customer perception.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN o.delivery_fee = 0 THEN 'Free Delivery'
+        WHEN o.delivery_fee <= 30 THEN '₹1–₹30'
+        WHEN o.delivery_fee <= 60 THEN '₹31–₹60'
+        ELSE 'Above ₹60'
+    END AS delivery_fee_range,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+GROUP BY
+    delivery_fee_range
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Orders with free delivery achieved the highest average customer
+  rating (4.03).
+
+• Orders with delivery fees between ₹31–₹60 maintained a strong
+  average rating of 4.01, while ₹1–₹30 delivery charges recorded
+  a slightly lower rating (3.99).
+
+• Delivery charges have only a marginal impact on customer
+  satisfaction, indicating customers value overall service quality
+  more than delivery pricing alone.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue offering free-delivery campaigns during targeted
+  acquisition and retention initiatives.
+
+• Ensure delivery charges remain transparent throughout the ordering
+  journey to minimize customer dissatisfaction.
+
+• Optimize delivery operations to improve service quality, as
+  customer experience has a greater influence on ratings than
+  delivery fees.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does customer satisfaction differ between festival and
+non-festival periods?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer satisfaction during festival and
+regular business periods.
+
+Business Value
+--------------
+Helps evaluate whether increased operational demand during
+festivals affects customer experience.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN c.festival_flag = 1 THEN 'Festival'
+        ELSE 'Non-Festival'
+    END AS festival_period,
+    COUNT(*) AS total_reviews,
+    ROUND(AVG(r.rating),2) AS average_rating
+FROM reviews r
+JOIN orders o
+    ON r.order_id = o.order_id
+JOIN calendar c
+    ON o.calendar_id = c.calendar_id
+GROUP BY
+    festival_period
+ORDER BY
+    average_rating DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Non-festival orders achieved a slightly higher average customer
+  rating (4.01) compared to festival orders (3.98).
+
+• Although festival orders represent a smaller portion of total
+  reviews, customer satisfaction declines marginally during
+  high-demand periods.
+
+• Increased operational pressure during festivals may slightly
+  impact the overall customer experience.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Allocate additional delivery capacity and restaurant support
+  during festival periods to maintain service quality.
+
+• Closely monitor operational KPIs during seasonal demand spikes
+  to minimize service disruptions.
+
+• Conduct post-festival customer feedback analysis to identify
+  recurring pain points and improve future festive operations.
+
+----------------------------------------------------------------------------*/
