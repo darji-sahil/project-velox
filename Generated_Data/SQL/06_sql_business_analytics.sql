@@ -3661,3 +3661,1101 @@ Recommendation
   perceived customer value.
 
 ----------------------------------------------------------------------------*/
+
+/******************************************************************************
+SECTION 4 : MARKETING ANALYTICS
+
+Primary Stakeholder : Marketing Manager
+
+Purpose
+
+Evaluates promotional effectiveness, customer acquisition, campaign
+performance, customer purchasing behaviour, seasonal demand, and
+marketing-driven revenue opportunities to optimize growth strategies.
+
+******************************************************************************/
+
+/*==============================================================================
+Business Question
+
+Which promotions generate the highest total revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Identify the most successful promotional campaigns based on total revenue
+generated from delivered orders.
+
+Business Value
+--------------
+Helps the marketing team evaluate campaign performance and allocate future
+marketing investments toward high-performing promotions.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS promotion_rank,
+    p.promotion_name,
+    ROUND(SUM(o.final_amount),2) AS total_revenue
+FROM orders o
+JOIN promotions p
+    ON o.promotion_id = p.promotion_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    p.promotion_name
+ORDER BY
+    promotion_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Family Pack generated the highest promotional revenue at ₹1.05 million,
+  making it the platform's best-performing marketing campaign.
+
+• The top six promotional campaigns generated very similar revenue,
+  indicating balanced customer engagement across multiple offers.
+
+• No single promotion overwhelmingly dominates revenue generation,
+  demonstrating a diversified promotional strategy.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue investing in high-performing campaigns such as Family Pack
+  while periodically refreshing campaign messaging.
+
+• Maintain a balanced promotional portfolio instead of relying on a
+  single flagship campaign.
+
+• Monitor campaign performance regularly to identify opportunities for
+  optimization and sustained revenue growth.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which promotions are used most frequently by customers?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure customer adoption across promotional campaigns based on completed
+orders.
+
+Business Value
+--------------
+Helps identify the most popular campaigns and supports future promotion
+planning based on customer engagement.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS promotion_rank,
+    p.promotion_name,
+    COUNT(*) AS total_orders
+FROM orders o
+JOIN promotions p
+    ON o.promotion_id = p.promotion_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    p.promotion_name
+ORDER BY
+    promotion_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Family Pack was the most frequently redeemed promotion with 1,244
+  completed promotional orders.
+
+• Customer adoption remains highly consistent across all promotional
+  campaigns, indicating widespread acceptance of marketing offers.
+
+• The balanced redemption pattern reduces dependence on any single
+  promotional campaign for customer engagement.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue offering a diverse mix of promotional campaigns to appeal
+  to different customer segments.
+
+• Periodically introduce new campaign variations to sustain customer
+  engagement and prevent promotion fatigue.
+
+• Monitor redemption trends to identify campaigns requiring refinement
+  or replacement.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments respond most actively to promotional campaigns?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze promotional order distribution across customer segments.
+
+Business Value
+--------------
+Helps marketing teams identify high-response customer segments and improve
+campaign targeting.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS segment_rank,
+    c.customer_segment,
+    COUNT(*) AS promotional_orders
+FROM orders o
+JOIN customers c
+    ON o.customer_id = c.customer_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Working Professionals accounted for the highest promotional response
+  with 18,688 completed promotional orders.
+
+• Family and Student segments also demonstrated strong campaign
+  participation, while Food Enthusiasts represented the smallest
+  promotional audience.
+
+• Promotional campaigns appear to resonate particularly well with
+  customers placing frequent everyday orders.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Prioritize marketing campaigns targeting Working Professionals,
+  as they represent the platform's largest promotional audience.
+
+• Design personalized campaigns for Student and Family segments to
+  further improve customer engagement.
+
+• Develop niche promotional strategies to increase participation
+  among Food Enthusiasts.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which promotions generate the highest revenue relative to the discounts
+offered?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate the efficiency of promotional campaigns by comparing revenue
+generated against discounts provided.
+
+Business Value
+--------------
+Supports marketing budget optimization by identifying promotions that
+deliver strong revenue with controlled discount costs.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (
+        ORDER BY SUM(o.final_amount)/SUM(o.discount_amount) DESC
+    ) AS efficiency_rank,
+    p.promotion_name,
+    ROUND(SUM(o.discount_amount),2) AS total_discount_given,
+    ROUND(SUM(o.final_amount),2) AS total_revenue,
+    ROUND(
+        SUM(o.final_amount)/SUM(o.discount_amount),
+        2
+    ) AS revenue_per_discount_rupee
+FROM orders o
+JOIN promotions p
+    ON o.promotion_id=p.promotion_id
+WHERE
+    o.order_status='Delivered'
+    AND o.discount_amount>0
+GROUP BY
+    p.promotion_name
+ORDER BY
+    efficiency_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• All promotional campaigns generated approximately ₹10 of revenue
+  for every ₹1 of discount provided.
+
+• Revenue efficiency remains remarkably consistent across campaigns,
+  indicating balanced promotional performance.
+
+• No campaign demonstrates a clear financial advantage over others
+  based solely on discount efficiency.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue monitoring promotion efficiency alongside customer
+  acquisition and repeat purchase metrics.
+
+• Evaluate future campaigns using additional KPIs such as incremental
+  revenue and customer retention rather than discount efficiency alone.
+
+• Periodically review promotional structures to maintain sustainable
+  marketing investments.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities generate the highest promotional revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure promotional revenue contribution across operating cities.
+
+Business Value
+--------------
+Helps marketing teams identify geographic markets that respond most
+effectively to promotional campaigns.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS city_rank,
+    ci.city_name,
+    ROUND(SUM(o.final_amount),2) AS promotional_revenue
+FROM orders o
+JOIN customers cu
+    ON o.customer_id=cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id=dz.zone_id
+JOIN cities ci
+    ON dz.city_id=ci.city_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    ci.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Mumbai generated the highest promotional revenue at ₹10.80 million,
+  followed by Bengaluru and Hyderabad.
+
+• The top three cities contribute a substantial share of promotional
+  revenue, highlighting their importance to marketing performance.
+
+• Ahmedabad generated the lowest promotional revenue, indicating
+  comparatively lower campaign impact.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue allocating marketing resources toward high-performing
+  metropolitan markets to maximize campaign returns.
+
+• Investigate customer behaviour in lower-performing cities to identify
+  opportunities for market expansion.
+
+• Tailor regional promotional campaigns based on city-specific demand
+  characteristics.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How do promotional orders vary across different seasons?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze seasonal demand patterns for promotional campaigns.
+
+Business Value
+--------------
+Supports seasonal marketing planning and campaign scheduling throughout
+the year.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS season_rank,
+    cal.season,
+    COUNT(*) AS promotional_orders
+FROM orders o
+JOIN calendar cal
+    ON o.calendar_id=cal.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    cal.season
+ORDER BY
+    season_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Winter recorded the highest number of promotional orders with
+  19,465 completed transactions.
+
+• Monsoon generated moderate promotional demand, while Summer
+  experienced the lowest promotional activity.
+
+• Promotional performance demonstrates clear seasonal demand
+  variations throughout the year.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Increase promotional activity during Winter to capitalize on peak
+  customer demand.
+
+• Introduce season-specific marketing campaigns to improve customer
+  engagement during lower-demand periods.
+
+• Incorporate seasonal demand forecasting into future campaign
+  planning.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How do promotional orders perform during festival and non-festival periods?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare customer demand during festival and regular business periods.
+
+Business Value
+--------------
+Helps marketing teams evaluate whether promotional campaigns should be
+intensified around festivals.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    CASE
+        WHEN cal.festival_flag=1 THEN 'Festival'
+        ELSE 'Non-Festival'
+    END AS period,
+    COUNT(*) AS promotional_orders,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN calendar cal
+    ON o.calendar_id=cal.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    period
+ORDER BY
+    average_order_value DESC;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Non-Festival periods accounted for the vast majority of promotional
+  orders due to substantially higher transaction volume.
+
+• Average order value remained highly consistent between Festival
+  (₹886.62) and Non-Festival (₹891.00) periods.
+
+• Festival periods did not produce a significant increase in customer
+  spending despite promotional campaigns.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Design exclusive festival campaigns that encourage higher customer
+  spending rather than relying solely on standard promotions.
+
+• Evaluate festival-specific offers using incremental revenue and
+  customer acquisition metrics.
+
+• Continue monitoring seasonal campaign effectiveness to optimize
+  future promotional strategies.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments generate the highest promotional revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate the revenue contribution of each customer segment from
+promotional orders.
+
+Business Value
+--------------
+Helps marketing teams prioritize customer segments that generate the
+greatest revenue through promotional campaigns.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS segment_rank,
+    c.customer_segment,
+    ROUND(SUM(o.final_amount),2) AS promotional_revenue
+FROM orders o
+JOIN customers c
+    ON o.customer_id = c.customer_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Working Professionals generated ₹16.74 million in promotional
+  revenue, making them the platform's most valuable customer segment.
+
+• Family and Student segments contributed comparable promotional
+  revenue, together representing a substantial share of campaign
+  performance.
+
+• Promotional campaigns appear to resonate most strongly with
+  customers who order frequently throughout the week.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue prioritizing Working Professionals for premium promotional
+  campaigns and personalized offers.
+
+• Design segment-specific campaigns for Family and Student customers
+  to further improve campaign effectiveness.
+
+• Develop niche campaigns for Food Enthusiasts to increase engagement
+  and revenue contribution.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments generate the highest average promotional order value?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure the average spending behavior of each customer segment during
+promotional purchases.
+
+Business Value
+--------------
+Helps marketing teams identify high-value customer segments for premium
+campaigns and personalized offers.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY AVG(o.final_amount) DESC) AS segment_rank,
+    c.customer_segment,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN customers c
+    ON o.customer_id = c.customer_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Working Professionals recorded the highest promotional average
+  order value at ₹895.51.
+
+• Average promotional spending varies only moderately across customer
+  segments, indicating consistent purchasing behaviour.
+
+• Promotional campaigns successfully encourage spending across all
+  customer groups rather than benefiting only one segment.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue offering personalized promotions to high-value customer
+  segments.
+
+• Monitor average order value alongside campaign redemption to
+  maximize marketing ROI.
+
+• Introduce premium promotional bundles targeting customers with
+  higher spending potential.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which days of the week generate the highest promotional demand?
+
+==============================================================================
+
+Business Objective
+------------------
+Identify customer ordering behaviour throughout the week.
+
+Business Value
+--------------
+Supports campaign scheduling and helps maximize customer engagement by
+launching promotions on high-demand days.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY COUNT(*) DESC) AS day_rank,
+    cal.day_name,
+    COUNT(*) AS promotional_orders
+FROM orders o
+JOIN calendar cal
+    ON o.calendar_id = cal.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    cal.day_name
+ORDER BY
+    day_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Tuesday generated the highest promotional demand with 6,878
+  completed promotional orders.
+
+• Promotional demand remains relatively balanced throughout the week,
+  with only modest variation between weekdays.
+
+• Customer engagement is distributed consistently, reducing reliance
+  on a single peak business day.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Schedule major promotional launches early in the week to leverage
+  strong customer activity.
+
+• Maintain campaign visibility throughout the week due to the
+  relatively balanced ordering pattern.
+
+• Continuously monitor weekday performance to optimize campaign timing.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities generate the highest average promotional order value?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate customer spending patterns across cities during promotional
+campaigns.
+
+Business Value
+--------------
+Helps marketing teams identify cities where customers spend more per
+transaction, enabling geographically optimized campaigns.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY AVG(o.final_amount) DESC) AS city_rank,
+    ci.city_name,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN customers cu
+    ON o.customer_id = cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id = dz.zone_id
+JOIN cities ci
+    ON dz.city_id = ci.city_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    ci.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Hyderabad achieved the highest promotional average order value at
+  ₹968.22, followed by Mumbai and Pune.
+
+• Customers in Hyderabad demonstrate significantly higher spending
+  during promotional campaigns compared to other cities.
+
+• Bengaluru recorded the lowest promotional average order value,
+  indicating comparatively lower customer spending per transaction.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Prioritize premium promotional campaigns in Hyderabad, Mumbai and
+  Pune where customer spending is strongest.
+
+• Investigate customer purchasing behaviour in lower-performing cities
+  to identify opportunities for growth.
+
+• Tailor city-specific marketing strategies based on regional spending
+  patterns.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which discount types generate the highest promotional revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate the performance of different discount strategies based on
+revenue generated from completed promotional orders.
+
+Business Value
+--------------
+Helps marketing teams determine whether Percentage, Flat, or Cashback
+discounts produce the strongest business results.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS discount_type_rank,
+    p.discount_type,
+    ROUND(SUM(o.final_amount),2) AS promotional_revenue
+FROM orders o
+JOIN promotions p
+    ON o.promotion_id = p.promotion_id
+WHERE o.order_status = 'Delivered'
+GROUP BY
+    p.discount_type
+ORDER BY
+    discount_type_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Percentage-based promotions generated ₹6.78 million in promotional
+  revenue, outperforming Flat discount campaigns by a significant margin.
+
+• Percentage discounts appear to provide stronger customer engagement
+  while maintaining higher overall sales performance.
+
+• The revenue gap suggests that customers perceive percentage-based
+  offers as more attractive than flat-value discounts.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue prioritizing percentage-based promotional campaigns during
+  major marketing initiatives.
+
+• Experiment with different percentage discount levels to maximize
+  customer acquisition while protecting profit margins.
+
+• Periodically compare promotion profitability alongside revenue to
+  optimize future campaign strategies.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which discount values generate the highest promotional revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare campaign performance across different discount values.
+
+Business Value
+--------------
+Supports pricing strategy by identifying the most effective discount
+levels for maximizing revenue.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.final_amount) DESC) AS discount_rank,
+    CONCAT(p.discount_value,'%') AS discount_value,
+    ROUND(SUM(o.final_amount),2) AS promotional_revenue
+FROM orders o
+JOIN promotions p
+    ON o.promotion_id = p.promotion_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    p.discount_value
+ORDER BY
+    discount_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• The 15% discount generated the highest promotional revenue at
+  ₹1.89 million, outperforming all other discount levels.
+
+• Moderate discount percentages consistently delivered strong
+  promotional performance, indicating that larger discounts are not
+  always necessary to drive customer purchases.
+
+• Revenue performance varies across discount values, highlighting the
+  importance of optimizing promotional pricing.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Use moderate discount levels as the baseline for future marketing
+  campaigns to balance customer attraction and revenue generation.
+
+• Evaluate campaign performance continuously before increasing
+  promotional discounts.
+
+• Optimize discount structures based on both customer response and
+  overall profitability.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments receive the highest total promotional discounts?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure promotional investment across customer segments.
+
+Business Value
+--------------
+Helps marketing teams understand where promotional budgets are being
+allocated and evaluate customer targeting strategies.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.discount_amount) DESC) AS segment_rank,
+    c.customer_segment,
+    ROUND(SUM(o.discount_amount),2) AS total_discount_given
+FROM orders o
+JOIN customers c
+    ON o.customer_id = c.customer_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Working Professionals received the highest promotional investment,
+  with total discounts exceeding ₹463.94 thousand.
+
+• Family and Student segments received comparable promotional
+  investments, demonstrating balanced campaign allocation.
+
+• Promotional spending aligns closely with customer revenue
+  contribution across major customer segments.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue allocating promotional budgets toward high-value customer
+  segments that generate substantial revenue.
+
+• Review campaign allocation periodically to ensure promotional
+  investments produce proportional business returns.
+
+• Develop targeted campaigns for lower-engagement customer segments
+  to improve overall marketing effectiveness.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities receive the highest total promotional discounts?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze promotional investment across operating cities.
+
+Business Value
+--------------
+Supports regional campaign planning and marketing budget allocation.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY SUM(o.discount_amount) DESC) AS city_rank,
+    ci.city_name,
+    ROUND(SUM(o.discount_amount),2) AS total_discount_given
+FROM orders o
+JOIN customers cu
+    ON o.customer_id = cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id = dz.zone_id
+JOIN cities ci
+    ON dz.city_id = ci.city_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    ci.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Mumbai received the highest promotional investment with discounts
+  exceeding ₹303.10 thousand.
+
+• Bengaluru and Hyderabad also received significant promotional
+  allocations, reflecting their strategic market importance.
+
+• Promotional investment generally aligns with overall city revenue,
+  supporting a balanced regional marketing strategy.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue prioritizing promotional investment in high-performing
+  metropolitan markets.
+
+• Evaluate campaign effectiveness in lower-investment cities before
+  increasing promotional budgets.
+
+• Incorporate regional demand trends into future promotional planning.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which promotions generate the highest average customer discount?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare promotional campaigns based on the average discount offered
+per completed order.
+
+Business Value
+--------------
+Helps evaluate whether campaigns are providing balanced customer value
+while maintaining marketing efficiency.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER (ORDER BY AVG(o.discount_amount) DESC) AS promotion_rank,
+    p.promotion_name,
+    ROUND(AVG(o.discount_amount),2) AS average_discount
+FROM orders o
+JOIN promotions p
+    ON o.promotion_id = p.promotion_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    p.promotion_name
+ORDER BY
+    promotion_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Lunch Combo provided the highest average customer discount at
+  ₹85.04 per promotional order.
+
+• The average discount offered across campaigns remains relatively
+  consistent, indicating standardized promotional pricing.
+
+• No promotional campaign appears to rely on excessive discounting to
+  generate customer engagement.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining balanced promotional discount structures to
+  preserve customer value while protecting revenue.
+
+• Regularly review average discount levels alongside campaign
+  performance to maximize marketing efficiency.
+
+• Reserve higher-value discounts for strategic campaigns and seasonal
+  marketing events.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+What are the overall marketing campaign KPIs for Project Velox?
+
+==============================================================================
+
+Business Objective
+------------------
+Provide an executive summary of promotional campaign performance.
+
+Business Value
+--------------
+Offers marketing leadership a consolidated view of campaign scale,
+customer savings, and promotional revenue generation.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(SUM(final_amount),2) AS promotional_revenue,
+    ROUND(SUM(discount_amount),2) AS total_discount_given,
+    ROUND(AVG(discount_amount),2) AS average_discount_per_order,
+    COUNT(*) AS promotional_orders,
+    ROUND(AVG(final_amount),2) AS average_order_value
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Marketing campaigns generated ₹41.89 million in promotional
+  revenue from 47,017 completed promotional orders.
+
+• Customers collectively received ₹1.17 million in promotional
+  discounts while maintaining a healthy average order value of
+  ₹890.91.
+
+• The average promotional discount of ₹24.78 per order indicates
+  efficient campaign execution without significantly reducing
+  customer spending.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue monitoring campaign KPIs regularly to evaluate marketing
+  effectiveness and promotional ROI.
+
+• Balance customer incentives with sustainable discount strategies to
+  preserve long-term profitability.
+
+• Expand future marketing analysis by incorporating customer retention,
+  repeat purchase behaviour, and campaign conversion metrics.
+
+----------------------------------------------------------------------------*/
