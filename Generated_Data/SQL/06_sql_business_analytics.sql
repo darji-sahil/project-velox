@@ -6859,3 +6859,446 @@ Recommendation
 • Monitor repeat purchasing trends by customer segment.
 
 ----------------------------------------------------------------------------*/
+
+/*==============================================================================
+BUSINESS ALERTS
+Proactive Monitoring & Executive Alert Rules
+==============================================================================
+
+Unlike Business Analytics, Business Alerts continuously monitor operational
+performance and notify stakeholders whenever predefined business thresholds
+are violated.
+
+The objective is proactive decision-making rather than historical reporting.
+
+Each alert consists of:
+
+• Business Objective
+• Business Importance
+• SQL Monitoring Query
+• Current System Value
+• Alert Trigger Rule
+• Recommended Business Action
+
+==============================================================================*/
+
+/*==============================================================================
+Business Alert 1
+
+Delivery Delay Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Continuously monitor average delivery time to ensure deliveries remain
+within the organization's operational SLA.
+
+Business Importance
+-------------------
+Late deliveries directly impact customer satisfaction, increase complaints,
+reduce repeat orders and negatively affect restaurant reputation.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(AVG(delivery_minutes),2) AS average_delivery_time
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+Average Delivery Time = 39.99 Minutes
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+IF Average Delivery Time > 40 Minutes
+
+Status : CRITICAL
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Increase delivery partner availability.
+
+• Identify city-level delivery bottlenecks.
+
+• Notify Operations team immediately.
+
+• Monitor performance until SLA is restored.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Alert 2
+
+High Order Cancellation Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Continuously monitor cancellation rate across business operations.
+
+Business Importance
+-------------------
+A rising cancellation rate directly reduces revenue, customer trust,
+and restaurant efficiency.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+SELECT
+    COUNT(*) AS total_orders,
+    SUM(order_status='Cancelled') AS cancelled_orders,
+    ROUND(
+        SUM(order_status='Cancelled')*100.0/
+        COUNT(*),2
+    ) AS cancellation_rate
+FROM orders;
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+Cancellation Rate = 5.97%
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+IF Cancellation Rate > 5%
+
+Status : HIGH RISK
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Investigate cancellation reasons.
+
+• Monitor restaurant acceptance rate.
+
+• Review delivery partner allocation.
+
+• Escalate recurring cancellation hotspots.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Alert 3
+
+Customer Satisfaction Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Continuously monitor overall customer satisfaction.
+
+Business Importance
+-------------------
+Customer ratings provide the earliest indication of declining service quality.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(AVG(rating),2) AS average_customer_rating
+FROM reviews;
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+Average Rating = 4.01
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+IF Average Rating < 4.00
+
+Status : CUSTOMER EXPERIENCE ALERT
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Review recent customer complaints.
+
+• Identify low-rated restaurants.
+
+• Improve delivery experience.
+
+• Conduct customer feedback analysis.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Alert 4
+
+Restaurant Quality Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Identify restaurants consistently receiving low customer ratings.
+
+Business Importance
+-------------------
+Poor-performing restaurants negatively affect platform reputation and
+overall customer satisfaction.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+SELECT
+    restaurant_name,
+    average_rating
+FROM restaurants
+WHERE average_rating < 4.0
+ORDER BY average_rating;
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+18 Restaurants below platform quality benchmark.
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+IF Restaurant Rating < 4.00
+
+Status : QUALITY REVIEW REQUIRED
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Notify restaurant partners.
+
+• Review food quality and delivery feedback.
+
+• Recommend operational improvements.
+
+• Monitor rating recovery.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Alert 5
+
+Average Order Value Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Continuously monitor average revenue generated per completed order.
+
+Business Importance
+-------------------
+Declining Average Order Value may indicate weaker customer spending,
+pricing inefficiencies or ineffective promotional strategies.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(
+        SUM(final_amount)/COUNT(*),2
+    ) AS average_order_value
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+Average Order Value = ₹890.91
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(SUM(final_amount)/COUNT(*),2) AS average_order_value,
+    CASE
+        WHEN ROUND(SUM(final_amount)/COUNT(*),2) < 713 THEN 'CRITICAL'
+        WHEN ROUND(SUM(final_amount)/COUNT(*),2) < 802 THEN 'WARNING'
+        ELSE 'NORMAL'
+    END AS alert_status
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Review pricing strategy.
+
+• Evaluate promotional effectiveness.
+
+• Increase upselling opportunities.
+
+• Monitor customer purchase behaviour.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Alert 6
+
+Customer Loyalty Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Monitor restaurant-level customer loyalty by identifying restaurants with
+low proportions of highly loyal customers.
+
+Business Importance
+-------------------
+Low customer loyalty may indicate poor food quality, inconsistent service,
+pricing concerns, or weak customer engagement at specific restaurants.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+WITH customer_orders AS
+(
+    SELECT
+        r.restaurant_name,
+        o.customer_id,
+        COUNT(*) AS total_orders
+    FROM orders o
+    JOIN restaurants r
+        ON o.restaurant_id = r.restaurant_id
+    WHERE o.order_status='Delivered'
+    GROUP BY
+        r.restaurant_name,
+        o.customer_id
+)
+
+SELECT
+    restaurant_name,
+    COUNT(*) AS customers,
+    SUM(total_orders >= 5) AS loyal_customers,
+    ROUND(
+        SUM(total_orders >= 5) * 100.0 /
+        COUNT(*),2
+    ) AS loyalty_rate
+FROM customer_orders
+GROUP BY
+    restaurant_name
+ORDER BY
+    loyalty_rate;
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+Lowest Restaurant Loyalty Rate = 16.67%
+
+(Dum House Kitchen)
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+IF Restaurant Loyalty Rate < 30%
+
+Status : CUSTOMER LOYALTY ALERT
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Investigate restaurants with consistently low repeat customer rates.
+
+• Review food quality, menu pricing, and customer feedback for
+  underperforming restaurants.
+
+• Launch restaurant-specific loyalty campaigns and personalized
+  promotional offers.
+
+• Monitor customer loyalty trends regularly to measure the impact
+  of corrective actions.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Alert 7
+
+Executive Business Health Alert
+
+==============================================================================
+
+Business Objective
+------------------
+Monitor restaurant-level order completion performance to identify operational
+underperformance before it affects customer experience.
+
+Business Importance
+-------------------
+Restaurant-level completion rates provide executives with early warning signs
+of operational issues that may impact revenue and customer satisfaction.
+
+SQL Monitoring
+----------------------------------------------------------------------------*/
+
+SELECT
+    r.restaurant_name,
+    COUNT(*) AS total_orders,
+    SUM(o.order_status='Delivered') AS delivered_orders,
+    ROUND(
+        SUM(o.order_status='Delivered')*100.0/
+        COUNT(*),2
+    ) AS completion_rate
+FROM orders o
+JOIN restaurants r
+    ON o.restaurant_id=r.restaurant_id
+GROUP BY
+    r.restaurant_name
+ORDER BY
+    completion_rate;
+
+/*----------------------------------------------------------------------------
+Current System Value
+----------------------------------------------------------------------------*/
+
+Lowest Restaurant Completion Rate = 90.80%
+
+(The Curry House Corner)
+
+/*----------------------------------------------------------------------------
+Alert Trigger
+----------------------------------------------------------------------------*/
+
+IF Restaurant Completion Rate < 92%
+
+Status : EXECUTIVE REVIEW REQUIRED
+
+/*----------------------------------------------------------------------------
+Business Action
+----------------------------------------------------------------------------*/
+
+• Review restaurant acceptance and cancellation patterns.
+
+• Investigate operational bottlenecks affecting fulfillment.
+
+• Coordinate with restaurant partners to improve completion rates.
+
+• Closely monitor low-performing restaurants until recovery.
+
+----------------------------------------------------------------------------*/
