@@ -4759,3 +4759,844 @@ Recommendation
   repeat purchase behaviour, and campaign conversion metrics.
 
 ----------------------------------------------------------------------------*/
+
+/******************************************************************************
+SECTION 5 : FINANCE ANALYTICS
+
+Primary Stakeholder : Finance Manager / Chief Financial Officer (CFO)
+
+Purpose
+
+Provides comprehensive financial visibility into Project Velox by
+analyzing revenue generation, platform fees, delivery costs,
+discount expenditure, profitability, and financial efficiency
+across the business.
+
+******************************************************************************/
+
+/*==============================================================================
+Business Question
+
+How is customer payment distributed between subtotal, GST, discounts,
+platform fees, delivery fees, and final revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Break down the financial composition of customer payments.
+
+Business Value
+--------------
+Helps finance leadership understand where revenue originates and
+how discounts and fees impact the final customer payment.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(SUM(subtotal),2) AS total_subtotal,
+    ROUND(SUM(gst_amount),2) AS total_gst,
+    ROUND(SUM(discount_amount),2) AS total_discount,
+    ROUND(SUM(platform_fee),2) AS total_platform_fee,
+    ROUND(SUM(delivery_fee),2) AS total_delivery_fee,
+    ROUND(SUM(final_amount),2) AS total_revenue
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Project Velox generated ₹41.89 Million in completed order revenue,
+  comprising ₹39.25 Million in food subtotal, ₹1.96 Million in GST,
+  ₹1.37 Million in delivery fees, and ₹0.47 Million in platform fees.
+
+• Total promotional discounts amounted to ₹1.17 Million, representing
+  strategic marketing investment while maintaining strong overall revenue.
+
+• The financial composition indicates that food sales remain the primary
+  revenue driver, with delivery and platform fees providing additional
+  monetization streams.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining a balanced revenue structure by optimizing
+  both core food sales and ancillary revenue streams.
+
+• Periodically evaluate discount expenditure to ensure promotional
+  investments continue generating profitable customer acquisition.
+
+• Monitor the contribution of delivery and platform fees as order
+  volumes scale across new markets.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities generate the highest platform fee revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate platform fee contribution across operating cities.
+
+Business Value
+--------------
+Helps finance teams identify markets generating the strongest
+platform revenue.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY SUM(o.platform_fee) DESC) AS city_rank,
+    ci.city_name,
+    ROUND(SUM(o.platform_fee),2) AS platform_fee_revenue
+FROM orders o
+JOIN customers cu
+    ON o.customer_id=cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id=dz.zone_id
+JOIN cities ci
+    ON dz.city_id=ci.city_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    ci.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Mumbai generated the highest platform fee revenue at ₹116,020,
+  followed by Bengaluru and Delhi.
+
+• Platform fee revenue closely follows completed order volumes,
+  demonstrating consistent fee collection across cities.
+
+• Higher-volume metropolitan markets contribute the largest share
+  of platform monetization.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue expanding order volumes in high-performing cities to
+  maximize platform fee earnings.
+
+• Evaluate opportunities to increase platform adoption in lower
+  contributing cities through localized growth initiatives.
+
+• Monitor platform fee performance alongside customer satisfaction
+  to maintain sustainable revenue growth.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurant categories generate the highest platform fee revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure platform fee contribution by restaurant category.
+
+Business Value
+--------------
+Helps evaluate which cuisine categories contribute the greatest
+platform earnings.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY SUM(o.platform_fee) DESC) AS category_rank,
+    rc.category_name,
+    ROUND(SUM(o.platform_fee),2) AS platform_fee_revenue
+FROM orders o
+JOIN restaurants r
+    ON o.restaurant_id=r.restaurant_id
+JOIN restaurant_categories rc
+    ON r.category_id=rc.category_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    rc.category_name
+ORDER BY
+    category_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• North Indian restaurants generated the highest platform fee revenue,
+  followed closely by Chinese and Cafe & Bakery categories.
+
+• The top cuisine categories contribute a significant proportion of
+  recurring platform earnings.
+
+• Beverage outlets generated comparatively lower platform fee revenue,
+  reflecting smaller order values and fewer completed transactions.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Prioritize strategic partnerships with high-performing cuisine
+  categories to strengthen platform revenue.
+
+• Encourage lower-performing restaurant categories through
+  promotional visibility and targeted campaigns.
+
+• Continuously monitor category-level financial contribution when
+  expanding restaurant partnerships.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which customer segments generate the highest platform fee revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure platform earnings contributed by different customer segments.
+
+Business Value
+--------------
+Supports customer profitability analysis and long-term pricing
+strategy.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY SUM(o.platform_fee) DESC) AS segment_rank,
+    c.customer_segment,
+    ROUND(SUM(o.platform_fee),2) AS platform_fee_revenue
+FROM orders o
+JOIN customers c
+    ON o.customer_id=c.customer_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Working Professionals generated the highest platform fee revenue,
+  contributing ₹186,880.
+
+• Family and Student customers contributed nearly similar platform
+  fee revenue despite differences in overall order volume.
+
+• Food Enthusiasts represent the smallest platform fee contribution,
+  indicating a relatively smaller customer base.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue focusing acquisition strategies on Working Professionals,
+  the platform's most valuable customer segment.
+
+• Design personalized engagement campaigns for Family and Student
+  customers to increase repeat ordering frequency.
+
+• Explore premium offerings for Food Enthusiasts to improve their
+  long-term financial contribution.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which seasons generate the highest delivery fee revenue?
+
+==============================================================================
+
+Business Objective
+------------------
+Analyze delivery fee collection across seasons.
+
+Business Value
+--------------
+Supports seasonal financial planning and operational budgeting.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY SUM(o.delivery_fee) DESC) AS season_rank,
+    cal.season,
+    ROUND(SUM(o.delivery_fee),2) AS delivery_fee_revenue
+FROM orders o
+JOIN calendar cal
+    ON o.calendar_id=cal.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    cal.season
+ORDER BY
+    season_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Winter generated the highest delivery fee revenue at ₹568,195,
+  followed by Monsoon and Summer.
+
+• Delivery fee revenue aligns closely with seasonal order demand,
+  indicating stable pricing across the year.
+
+• Seasonal fluctuations primarily reflect changes in order volume
+  rather than changes in delivery pricing.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Prepare delivery capacity for high-demand Winter periods to
+  maximize delivery fee revenue.
+
+• Continue monitoring seasonal demand trends when forecasting
+  logistics expenditure.
+
+• Review seasonal delivery pricing only if operational costs
+  change significantly.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How much discount expenditure is incurred across different customer
+segments?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare promotional spending across customer segments.
+
+Business Value
+--------------
+Helps finance evaluate promotional cost allocation and marketing
+investment.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(ORDER BY SUM(o.discount_amount) DESC) AS segment_rank,
+    c.customer_segment,
+    ROUND(SUM(o.discount_amount),2) AS total_discount_cost
+FROM orders o
+JOIN customers c
+    ON o.customer_id=c.customer_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Working Professionals received the highest promotional investment,
+  accounting for ₹463,938.60 in total discounts.
+
+• Student and Family segments received comparable discount spending,
+  reflecting balanced promotional distribution.
+
+• Discount allocation closely mirrors customer order volumes,
+  indicating targeted promotional investment.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue evaluating promotional spending alongside customer
+  lifetime value to maximize marketing ROI.
+
+• Periodically assess whether discount allocation generates
+  proportional revenue growth across customer segments.
+
+• Optimize promotional budgets based on long-term customer
+  profitability rather than order volume alone.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+What are the average financial components per completed order?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure the average financial contribution of every completed order.
+
+Business Value
+--------------
+Provides finance leadership with standardized financial KPIs for
+business monitoring.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    ROUND(AVG(subtotal),2) AS average_subtotal,
+    ROUND(AVG(gst_amount),2) AS average_gst,
+    ROUND(AVG(discount_amount),2) AS average_discount,
+    ROUND(AVG(platform_fee),2) AS average_platform_fee,
+    ROUND(AVG(delivery_fee),2) AS average_delivery_fee,
+    ROUND(AVG(final_amount),2) AS average_revenue
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• The average completed order generated ₹834.78 in food subtotal,
+  ₹41.74 in GST, ₹29.17 in delivery fees, and ₹10.00 in platform fees.
+
+• Customers received an average promotional discount of ₹24.78 per
+  completed order while still generating an average final payment
+  of ₹890.91.
+
+• The financial KPIs demonstrate a healthy balance between customer
+  incentives and overall revenue generation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue monitoring average order financial metrics as key
+  finance performance indicators.
+
+• Optimize promotional spending to sustain revenue growth while
+  maintaining attractive customer pricing.
+
+• Benchmark these financial KPIs periodically to evaluate pricing
+  strategy and operational efficiency.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities generate the highest average revenue per completed order?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate average customer spending across cities.
+
+Business Value
+--------------
+Helps finance teams identify premium markets with stronger revenue generation
+per transaction.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(o.final_amount) DESC
+    ) AS city_rank,
+    c.city_name,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN customers cu
+    ON o.customer_id = cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id = dz.zone_id
+JOIN cities c
+    ON dz.city_id = c.city_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Hyderabad recorded the highest average order value at ₹968.22,
+  followed by Mumbai and Pune.
+
+• Bengaluru generated the lowest average order value despite being
+  one of the platform's largest markets by order volume.
+
+• Premium customer spending is concentrated in Hyderabad and Mumbai,
+  indicating stronger per-order revenue generation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Analyze the product mix and pricing strategies used in Hyderabad
+  to replicate high-value purchasing behaviour in other cities.
+
+• Develop premium menu offerings in Bengaluru to improve average
+  customer spending without relying solely on order volume.
+
+• Monitor city-level average order values alongside order growth
+  to maximize long-term revenue.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which restaurant categories generate the highest average revenue per order?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare category profitability at the transaction level.
+
+Business Value
+--------------
+Supports pricing strategy and category-level financial planning.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(o.final_amount) DESC
+    ) AS category_rank,
+    rc.category_name,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN restaurants r
+    ON o.restaurant_id = r.restaurant_id
+JOIN restaurant_categories rc
+    ON r.category_id = rc.category_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    rc.category_name
+ORDER BY
+    category_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Beverage restaurants generated the highest average order value
+  at ₹1,752.04, significantly outperforming every other category.
+
+• Pizza and Healthy & Salads also achieved strong average order
+  values, exceeding ₹970 per transaction.
+
+• South Indian restaurants recorded the lowest average order value,
+  indicating comparatively lower customer spending per visit.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Investigate the pricing strategy of Beverage outlets to identify
+  successful upselling opportunities across other restaurant categories.
+
+• Encourage bundled meal offerings within lower-value categories to
+  improve average transaction size.
+
+• Monitor category-level average order values when onboarding new
+  restaurant partners.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+How does average discount vary across customer segments?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure promotional investment by customer segment.
+
+Business Value
+--------------
+Helps finance teams optimize promotional spending.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(o.discount_amount) DESC
+    ) AS segment_rank,
+    c.customer_segment,
+    ROUND(AVG(o.discount_amount),2) AS average_discount
+FROM orders o
+JOIN customers c
+    ON o.customer_id = c.customer_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.customer_segment
+ORDER BY
+    segment_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Students received the highest average promotional discount at ₹25.61
+  per completed order.
+
+• Working Professionals and Family customers received similar average
+  discount values, indicating balanced promotional allocation.
+
+• Food Enthusiasts received the lowest average discount, reflecting
+  comparatively lower promotional investment.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue evaluating promotional effectiveness by customer segment
+  to maximize return on discount spending.
+
+• Review whether higher student discounts generate proportional
+  increases in customer retention and repeat purchases.
+
+• Optimize future promotional budgets using customer lifetime value
+  rather than discount levels alone.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which seasons generate the highest average revenue per completed order?
+
+==============================================================================
+
+Business Objective
+------------------
+Measure seasonal spending behaviour.
+
+Business Value
+--------------
+Supports seasonal pricing and revenue forecasting.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(o.final_amount) DESC
+    ) AS season_rank,
+    cal.season,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN calendar cal
+    ON o.calendar_id = cal.calendar_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    cal.season
+ORDER BY
+    season_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Summer recorded the highest average order value at ₹891.88,
+  narrowly exceeding Winter and Monsoon.
+
+• Average customer spending remains highly consistent across all
+  three seasons.
+
+• Seasonal demand affects transaction volume more than individual
+  customer spending behaviour.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue maintaining consistent pricing strategies throughout
+  the year given the stable seasonal spending patterns.
+
+• Focus seasonal campaigns on increasing order frequency rather
+  than changing menu pricing.
+
+• Use seasonal demand forecasts primarily for operational and
+  inventory planning.
+
+----------------------------------------------------------------------------*/    
+
+/*==============================================================================
+Business Question
+
+Which promotional campaigns generated the highest average order value?
+
+==============================================================================
+
+Business Objective
+------------------
+Evaluate campaign quality instead of campaign volume.
+
+Business Value
+--------------
+Helps identify campaigns attracting higher-value customers.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(o.final_amount) DESC
+    ) AS campaign_rank,
+    pr.promotion_name,
+    ROUND(AVG(o.final_amount),2) AS average_order_value
+FROM orders o
+JOIN promotions pr
+    ON o.promotion_id = pr.promotion_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    pr.promotion_name
+ORDER BY
+    campaign_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Lunch Combo generated the highest average order value at ₹846.90,
+  followed closely by Welcome Offer and Family Pack.
+
+• Wallet Cashback recorded the lowest average order value among
+  promotional campaigns.
+
+• Campaign performance varies by customer basket size rather than
+  promotional popularity alone.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue prioritizing high-performing campaigns such as Lunch
+  Combo and Welcome Offer during peak demand periods.
+
+• Review Wallet Cashback campaign structure to improve customer
+  basket value while maintaining campaign attractiveness.
+
+• Evaluate future promotions using average order value alongside
+  campaign adoption.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Business Question
+
+Which cities receive the highest average promotional discount per completed order?
+
+==============================================================================
+
+Business Objective
+------------------
+Compare promotional investment across cities.
+
+Business Value
+--------------
+Helps finance evaluate discount allocation across geographic markets.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    DENSE_RANK() OVER(
+        ORDER BY AVG(o.discount_amount) DESC
+    ) AS city_rank,
+    c.city_name,
+    ROUND(AVG(o.discount_amount),2) AS average_discount
+FROM orders o
+JOIN customers cu
+    ON o.customer_id = cu.customer_id
+JOIN delivery_zones dz
+    ON cu.zone_id = dz.zone_id
+JOIN cities c
+    ON dz.city_id = c.city_id
+WHERE o.order_status='Delivered'
+GROUP BY
+    c.city_name
+ORDER BY
+    city_rank;
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Hyderabad received the highest average promotional discount at
+  ₹26.73 per completed order.
+
+• Mumbai and Pune also received above-average promotional investment,
+  indicating stronger marketing expenditure in major cities.
+
+• Ahmedabad received the lowest average discount, reflecting a more
+  conservative promotional strategy.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Periodically evaluate whether higher city-level promotional
+  investment produces proportional revenue growth.
+
+• Benchmark promotional efficiency across cities to optimize
+  future marketing budgets.
+
+• Balance promotional spending with customer acquisition and
+  profitability objectives across all markets.
+
+----------------------------------------------------------------------------*/
