@@ -6413,3 +6413,449 @@ Recommendation
   recurring pain points and improve future festive operations.
 
 ----------------------------------------------------------------------------*/
+
+/*==============================================================================
+                    KPI COMPUTATION ANALYTICS
+==============================================================================
+
+Purpose
+-------
+This section computes reusable business KPIs that can be consumed directly
+inside dashboards and executive scorecards.
+
+Unlike stakeholder analytics, these queries focus on standardized business
+metrics instead of answering department-specific business questions.
+
+These KPIs serve as foundational measurements for enterprise-level indicators
+such as Revenue Quality Score (RQS), Customer Loyalty Score (CLS),
+Operational Health Score (OHS), and Executive Health Index (EHI).
+
+==============================================================================*/
+
+/*==============================================================================
+Key Performance Indicator (KPI)
+
+Average Revenue per Restaurant
+
+==============================================================================
+
+Business Objective
+------------------
+Measure how much revenue each restaurant generates on average.
+
+Business Importance
+-------------------
+Provides a high-level measure of restaurant productivity and helps
+benchmark revenue generation across the restaurant network.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    COUNT(DISTINCT restaurant_id) AS total_restaurants,
+    ROUND(SUM(final_amount),2) AS total_revenue,
+    ROUND(SUM(final_amount)/COUNT(DISTINCT restaurant_id),2)
+        AS average_revenue_per_restaurant
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+KPI Interpretation
+----------------------------------------------------------------------------*/
+
+• Total Restaurants         : 2,000
+
+• Total Revenue             : ₹41,887,732.55
+
+• Average Revenue/Restaurant: ₹20,943.87
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Each restaurant generated approximately ₹20.9K in delivered
+  revenue on average.
+
+• Revenue is distributed across a large network of restaurants,
+  demonstrating healthy marketplace participation.
+
+• This KPI establishes a benchmark for evaluating individual
+  restaurant performance.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Benchmark restaurants against the network average to identify
+  top and underperforming partners.
+
+• Provide targeted business support to restaurants consistently
+  performing below the average revenue benchmark.
+
+• Monitor this KPI periodically to evaluate marketplace growth.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Key Performance Indicator (KPI)
+
+Average Delivered Orders per Restaurant
+
+==============================================================================
+
+Business Objective
+------------------
+Measure operational workload handled by each restaurant.
+
+Business Importance
+-------------------
+Helps evaluate restaurant utilization and marketplace demand.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    COUNT(*) AS delivered_orders,
+    COUNT(DISTINCT restaurant_id) AS total_restaurants,
+    ROUND(
+        COUNT(*)*1.0/
+        COUNT(DISTINCT restaurant_id),2
+    ) AS average_orders_per_restaurant
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+KPI Interpretation
+----------------------------------------------------------------------------*/
+
+• Delivered Orders              : 47,017
+
+• Restaurants                   : 120
+
+• Average Orders/Restaurant     : 391.81
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Every restaurant fulfills nearly 392 completed orders on average.
+
+• The restaurant network demonstrates balanced operational demand.
+
+• This KPI serves as a useful benchmark for restaurant capacity
+  planning.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Compare individual restaurants against this benchmark to detect
+  demand imbalance.
+
+• Support low-volume restaurants through visibility and marketing.
+
+• Prepare high-performing restaurants for future demand growth.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Key Performance Indicator (KPI)
+
+Restaurant Utilization Rate
+
+==============================================================================
+
+Business Objective
+------------------
+Measure the percentage of registered restaurants that receive
+customer orders.
+
+Business Importance
+-------------------
+Indicates marketplace participation and supply-side utilization.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    COUNT(DISTINCT restaurant_id) AS active_restaurants,
+    (SELECT COUNT(*) FROM restaurants) AS total_restaurants,
+    ROUND(
+        COUNT(DISTINCT restaurant_id)*100.0/
+        (SELECT COUNT(*) FROM restaurants),2
+    ) AS utilization_rate
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+KPI Interpretation
+----------------------------------------------------------------------------*/
+
+• Total Restaurants      : 50,000
+
+• Active Restaurants     : 47,017
+
+• Utilization Rate       : 94.03%
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Over 94% of restaurants received completed customer orders.
+
+• Marketplace participation remains exceptionally high.
+
+• Only a small percentage of restaurants remain inactive.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Investigate inactive restaurants for operational issues.
+
+• Improve onboarding support for newly added restaurants.
+
+• Maintain marketplace liquidity by continuously monitoring
+  restaurant utilization.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Key Performance Indicator (KPI)
+
+Customer Retention Rate
+
+==============================================================================
+
+Business Objective
+------------------
+Measure the percentage of active customers who place
+multiple completed orders.
+
+Business Importance
+-------------------
+Customer retention is one of the strongest indicators of
+long-term marketplace growth and customer loyalty.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+WITH customer_orders AS (
+
+    SELECT
+        customer_id,
+        COUNT(*) AS total_orders
+    FROM orders
+    WHERE order_status='Delivered'
+    GROUP BY customer_id
+
+)
+
+SELECT
+    COUNT(*) AS active_customers,
+
+    SUM(
+        CASE
+            WHEN total_orders>1 THEN 1
+            ELSE 0
+        END
+    ) AS repeat_customers,
+
+    ROUND(
+        SUM(
+            CASE
+                WHEN total_orders>1 THEN 1
+                ELSE 0
+            END
+        )*100.0/COUNT(*),2
+    ) AS customer_retention_rate
+
+FROM customer_orders;
+
+/*----------------------------------------------------------------------------
+KPI Interpretation
+----------------------------------------------------------------------------*/
+
+• Active Customers        : 2,000
+
+• Repeat Customers        : 2,000
+
+• Retention Rate          : 100.00%
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Every active customer placed more than one completed order.
+
+• The synthetic dataset represents extremely strong customer
+  loyalty and repeat purchasing behaviour.
+
+• Customer retention remains one of the strongest performance
+  indicators across the platform.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Continue investing in loyalty programs and personalized offers.
+
+• Monitor retention alongside customer acquisition to sustain
+  long-term revenue growth.
+
+• Use retained customers to evaluate lifetime value and future
+  marketing effectiveness.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Key Performance Indicator (KPI)
+
+Average Orders per Active Customer
+
+==============================================================================
+
+Business Objective
+------------------
+Measure purchasing frequency among active customers.
+
+Business Importance
+-------------------
+Higher purchase frequency directly contributes to sustainable
+revenue growth and customer lifetime value.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    COUNT(*) AS delivered_orders,
+    COUNT(DISTINCT customer_id) AS active_customers,
+    ROUND(
+        COUNT(*)*1.0/
+        COUNT(DISTINCT customer_id),2
+    ) AS average_orders_per_customer
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+KPI Interpretation
+----------------------------------------------------------------------------*/
+
+• Delivered Orders            : 47,017
+
+• Active Customers            : 2,000
+
+• Average Orders/Customer     : 23.51
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Each active customer places approximately 24 completed orders
+  on average.
+
+• The platform demonstrates strong customer engagement and
+  recurring purchasing behaviour.
+
+• High purchase frequency supports consistent revenue generation.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Increase personalized recommendations to further improve
+  purchase frequency.
+
+• Reward high-frequency customers through loyalty benefits.
+
+• Track this KPI alongside retention to maximize customer
+  lifetime value.
+
+----------------------------------------------------------------------------*/
+
+/*==============================================================================
+Key Performance Indicator (KPI)
+
+Repeat Customer Percentage
+
+==============================================================================
+
+Business Objective
+------------------
+Measure the proportion of completed orders generated by
+repeat customers.
+
+Business Importance
+-------------------
+Indicates dependence on loyal customers versus first-time buyers.
+
+SQL Analysis
+----------------------------------------------------------------------------*/
+
+SELECT
+    COUNT(*) AS delivered_orders,
+    SUM(CASE WHEN is_repeat_customer=1 THEN 1 ELSE 0 END)
+        AS repeat_orders,
+    ROUND(
+        SUM(CASE WHEN is_repeat_customer=1 THEN 1 ELSE 0 END)
+        *100.0/COUNT(*),2
+    ) AS repeat_customer_percentage
+FROM orders
+WHERE order_status='Delivered';
+
+/*----------------------------------------------------------------------------
+KPI Interpretation
+----------------------------------------------------------------------------*/
+
+• Delivered Orders            : 47,017
+
+• Repeat Customer Orders      : 14,057
+
+• Repeat Customer Percentage  : 29.90%
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Business Insight
+----------------------------------------------------------------------------*/
+
+• Nearly 30% of completed orders originate from repeat customers.
+
+• Loyal customers contribute significantly to marketplace revenue.
+
+• Both customer acquisition and retention continue contributing
+  to platform growth.
+
+----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------
+Recommendation
+----------------------------------------------------------------------------*/
+
+• Increase repeat purchase campaigns through personalized offers.
+
+• Encourage first-time customers to transition into repeat buyers.
+
+• Monitor repeat purchasing trends by customer segment.
+
+----------------------------------------------------------------------------*/
