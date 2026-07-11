@@ -69,6 +69,123 @@ FOREIGN KEY (restaurant_id)
 REFERENCES restaurants(restaurant_id);
 
 -- ==========================================================
+-- Orders → Customers
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_customer
+FOREIGN KEY (customer_id)
+REFERENCES customers(customer_id);
+
+-- ==========================================================
+-- Orders → Restaurants
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_restaurant
+FOREIGN KEY (restaurant_id)
+REFERENCES restaurants(restaurant_id);
+
+-- ==========================================================
+-- Orders → Riders
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_rider
+FOREIGN KEY (rider_id)
+REFERENCES riders(rider_id);
+
+-- ==========================================================
+-- Orders → Calendar
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_calendar
+FOREIGN KEY (calendar_id)
+REFERENCES calendar(calendar_id);
+
+-- ==========================================================
+-- Orders → Weather
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_weather
+FOREIGN KEY (weather_id)
+REFERENCES weather(weather_id);
+
+-- ==========================================================
+-- Orders → Payments
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_payment
+FOREIGN KEY (payment_id)
+REFERENCES payments(payment_id);
+
+-- ==========================================================
+-- Orders → Promotions
+-- ==========================================================
+
+ALTER TABLE orders
+ADD CONSTRAINT fk_order_promotion
+FOREIGN KEY (promotion_id)
+REFERENCES promotions(promotion_id);
+
+-- ==========================================================
+-- Order Items → Orders
+-- ==========================================================
+
+ALTER TABLE order_items
+ADD CONSTRAINT fk_order_item_order
+FOREIGN KEY (order_id)
+REFERENCES orders(order_id);
+
+-- ==========================================================
+-- Order Items → Menu Items
+-- ==========================================================
+
+ALTER TABLE order_items
+ADD CONSTRAINT fk_order_item_menu
+FOREIGN KEY (menu_item_id)
+REFERENCES menu_items(menu_item_id);
+
+-- ==========================================================
+-- Reviews → Orders
+-- ==========================================================
+
+ALTER TABLE reviews
+ADD CONSTRAINT fk_review_order
+FOREIGN KEY (order_id)
+REFERENCES orders(order_id);
+
+-- ==========================================================
+-- Reviews → Customers
+-- ==========================================================
+
+ALTER TABLE reviews
+ADD CONSTRAINT fk_review_customer
+FOREIGN KEY (customer_id)
+REFERENCES customers(customer_id);
+
+-- ==========================================================
+-- Reviews → Restaurants
+-- ==========================================================
+
+ALTER TABLE reviews
+ADD CONSTRAINT fk_review_restaurant
+FOREIGN KEY (restaurant_id)
+REFERENCES restaurants(restaurant_id);
+
+-- ==========================================================
+-- Reviews → Riders
+-- ==========================================================
+
+ALTER TABLE reviews
+ADD CONSTRAINT fk_review_rider
+FOREIGN KEY (rider_id)
+REFERENCES riders(rider_id);
+
+-- ==========================================================
 -- Validate Foreign Keys
 -- ==========================================================
 
